@@ -1,4 +1,4 @@
-Windows 7 Portfolio
+Windows 7 Portfolio built on React
 
 Live at: https://aerosness.github.io
 
