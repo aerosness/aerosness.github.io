@@ -562,7 +562,7 @@ background: linear-gradient(0deg, #0000004e 0%,
   height: 477px;
   border-radius: 8px;
   position: absolute;
-  bottom: 40px;
+  bottom: 43px;
   left: 0;
   backdrop-filter: blur(5px);
   outline: solid 2px #00000050;
@@ -581,7 +581,7 @@ background: linear-gradient(0deg, #0000004e 0%,
   top: 50%;
   transform: translateY(-50%);
   left: 10px;
-  /* opacity: 0.5; */
+  padding: 4px;
 }
 
 .startprofileimage{
@@ -752,3 +752,29 @@ transform: translateX(50%) translateY(-50px) scale(0.7);
   .badges img {
     height: 30px;
   }
+
+  .start-inner-items {
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    padding: 10px;
+  }
+  
+  .start-menu-item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 2px;
+    margin-bottom: 2px;
+    background-color: transparent;
+    transition: background-color 0.2s ease;
+    font-size: 14px;
+  }
+  
+  .start-menu-item:hover {
+    outline: solid 1px #3c7fb1;
+    background: rgb(167,217,245);
+    background: linear-gradient(0deg, rgba(167,217,245,1) 0%, rgb(175, 215, 238) 29%, rgba(188,229,252,1) 49%, rgba(217,240,252,1) 49%, rgb(213, 232, 243) 69%, rgba(234,246,253,1) 100%); 
+  }
+  

@@ -38,7 +38,7 @@ const AboutContent = () => {
         <h3>Hobbies</h3>
         <div className="hobbies">
           <div className="hobby-item">🎮 Gaming & Game Development</div>
-          <div className="hobby-item">🎤 Rap</div>
+          <div className="hobby-item">🎤 Rap Music</div>
           <div className="hobby-item">🎨 Photoshop Edits</div>
         </div>
       </div>

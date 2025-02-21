@@ -220,49 +220,76 @@ const Taskbar = ({
                 className="StartMenuButton"
                 onClick={() => handleStartMenuApp('info')}
               >
-                <img
-                  src="resources/ico/help.ico"
-                  alt="Info Icon"
-                  style={{ marginRight: '5px', width: '20px', height: '20px' }}
-                />
                 Info
               </button>
               <button
                 className="StartMenuButton"
                 onClick={() => handleStartMenuApp('links')}
               >
-                <img
-                  src="resources/ico/folder.ico"
-                  alt="Links Icon"
-                  style={{ marginRight: '5px', width: '20px', height: '20px' }}
-                />
                 Links
               </button>
               <button
                 className="StartMenuButton"
                 onClick={() => handleStartMenuApp('projects')}
               >
-                <img
-                  src="resources/ico/projects.ico"
-                  alt="Projects Icon"
-                  style={{ marginRight: '5px', width: '20px', height: '20px' }}
-                />
                 Projects
               </button>
               <button
                 className="StartMenuButton"
                 onClick={() => handleStartMenuApp('about')}
               >
-                <img
-                  src="resources/img/information.png"
-                  alt="About Icon"
-                  style={{ marginRight: '5px', width: '20px', height: '20px' }}
-                />
                 About Me
               </button>
             </div>
           </div>
-          <div className="startinner"></div>
+          <div className="startinner">
+            <div className="start-menu-items">
+              <div
+                className="start-menu-item"
+                onClick={() => handleStartMenuApp('info')}
+              >
+                <img
+                  src="resources/ico/help.ico"
+                  alt="Info Icon"
+                  style={{ marginRight: '5px', width: '40px', height: '40px' }}
+                />
+                <span>Info</span>
+              </div>
+              <div
+                className="start-menu-item"
+                onClick={() => handleStartMenuApp('links')}
+              >
+                <img
+                  src="resources/ico/folder.ico"
+                  alt="Links Icon"
+                  style={{ marginRight: '5px', width: '40px', height: '40px' }}
+                />
+                <span>Links</span>
+              </div>
+              <div
+                className="start-menu-item"
+                onClick={() => handleStartMenuApp('projects')}
+              >
+                <img
+                  src="resources/ico/projects.ico"
+                  alt="Projects Icon"
+                  style={{ marginRight: '5px', width: '40px', height: '40px' }}
+                />
+                <span>Projects</span>
+              </div>
+              <div
+                className="start-menu-item"
+                onClick={() => handleStartMenuApp('about')}
+              >
+                <img
+                  src="resources/img/information.png"
+                  alt="About Icon"
+                  style={{ marginRight: '5px', width: '40px', height: '40px' }}
+                />
+                <span>About Me</span>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
