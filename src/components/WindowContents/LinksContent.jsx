@@ -40,49 +40,179 @@ const LinksContent = () => {
           backgroundColor: '#ffffff',
         }}
       >
-        {/* sidebar TODO: сделать больше похоже на реальный там иконки иерархию добавить */}
         <ul
           className="sidebar"
           style={{
             float: 'left',
             width: '200px',
-            padding: 0,
-            margin: 0,
+            padding: '5px',
             listStyle: 'none',
           }}
         >
           <li
             style={{
-              padding: '5px',
-              borderBottom: '1px solid #ddd',
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '5px',
             }}
           >
+            <img
+              src="resources/ico/fav.ico"
+              alt="icon"
+              style={{ width: '16px', height: '16px', marginRight: '8px' }}
+            />
             Favorites
           </li>
-          <li style={{ padding: '5px' }}>Desktop</li>
-          <li style={{ padding: '5px' }}>Downloads</li>
-          <li style={{ padding: '5px' }}>Recent Places</li>
           <li
             style={{
-              padding: '5px',
-              borderTop: '1px solid #ddd',
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '5px',
+              marginLeft: '15px'
             }}
           >
+            <img
+              src="resources/ico/desk.ico"
+              alt="icon"
+              style={{ width: '16px', height: '16px', marginRight: '8px' }}
+            />
+            Desktop
+          </li>
+          <li
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '5px',
+              marginLeft: '15px'
+            }}
+          >
+            <img
+              src="resources/ico/download.ico"
+              alt="icon"
+              style={{ width: '16px', height: '16px', marginRight: '8px' }}
+            />
+            Downloads
+          </li>
+          <li
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '5px',
+              marginLeft: '15px'
+            }}
+          >
+            <img
+              src="resources/ico/folder.ico"
+              alt="icon"
+              style={{ width: '16px', height: '16px', marginRight: '8px' }}
+            />
+            Links
+          </li>
+          <li
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '5px',
+              marginTop: '15px',
+            }}
+          >
+            <img
+              src="resources/ico/explorer.ico"
+              alt="icon"
+              style={{ width: '16px', height: '16px', marginRight: '8px' }}
+            />
             Libraries
           </li>
-          <li style={{ padding: '5px' }}>Documents</li>
-          <li style={{ padding: '5px' }}>Music</li>
-          <li style={{ padding: '5px' }}>Pictures</li>
-          <li style={{ padding: '5px' }}>Videos</li>
           <li
             style={{
-              padding: '5px',
-              borderTop: '1px solid #ddd',
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '5px',
+              marginLeft: '15px'
             }}
           >
+            <img
+              src="resources/ico/doc.ico"
+              alt="icon"
+              style={{ width: '16px', height: '16px', marginRight: '8px' }}
+            />
+            Documents
+          </li>
+          <li
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '5px',
+              marginLeft: '15px'
+            }}
+          >
+            <img
+              src="resources/ico/music.ico"
+              alt="icon"
+              style={{ width: '16px', height: '16px', marginRight: '8px' }}
+            />
+            Music
+          </li>
+          <li
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '5px',
+              marginLeft: '15px'
+            }}
+          >
+            <img
+              src="resources/ico/pic.ico"
+              alt="icon"
+              style={{ width: '16px', height: '16px', marginRight: '8px' }}
+            />
+            Pictures
+          </li>
+          <li
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '5px',
+              marginLeft: '15px'
+            }}
+          >
+            <img
+              src="resources/ico/vid.ico"
+              alt="icon"
+              style={{ width: '16px', height: '16px', marginRight: '8px' }}
+            />
+            Videos
+          </li>
+          <li
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '5px',
+              marginTop: '15px',
+            }}
+          >
+            <img
+              src="resources/ico/pc.ico"
+              alt="icon"
+              style={{ width: '16px', height: '16px', marginRight: '8px' }}
+            />
             Computer
           </li>
-          <li style={{ padding: '5px' }}>Network</li>
+          <li
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '50px',
+              marginTop: '35px'
+            }}
+          >
+            <img
+              src="resources/ico/net.ico"
+              alt="icon"
+              style={{ width: '16px', height: '16px', marginRight: '8px' }}
+            />
+            Network
+          </li>
         </ul>
 
         <div
@@ -92,12 +222,15 @@ const LinksContent = () => {
           <p style={{ fontSize: '14px', color: '#555' }}>8 items</p>
 
           <div
+            className='links'
             style={{
               marginTop: '10px',
               display: 'flex',
+              gap: '20px',
               alignContent: 'space-evenly',
               justifyContent: 'space-between',
               width: '640px',
+              height: '300px'
             }}
           >
             <a target="_blank" href="https://github.com/aerosness">
@@ -230,18 +363,6 @@ const LinksContent = () => {
                 Roblox
               </p>
             </a>
-          </div>
-
-          {/* вторая строка ссылок TODO: поидеи надо флексбоксом както сделать ато когда на весь экран открываешь остаеться как было  */}
-          <div
-            style={{
-              marginTop: '50px',
-              display: 'flex',
-              alignContent: 'space-evenly',
-              justifyContent: 'space-between',
-              width: '640px',
-            }}
-          >
             <a target="_blank" href="https://x.com/aerosness">
               <img
                 style={{ maxWidth: '50px', maxHeight: '50px' }}

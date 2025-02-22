@@ -778,3 +778,14 @@ transform: translateX(50%) translateY(-50px) scale(0.7);
     background: linear-gradient(0deg, rgba(167,217,245,1) 0%, rgb(175, 215, 238) 29%, rgba(188,229,252,1) 49%, rgba(217,240,252,1) 49%, rgb(213, 232, 243) 69%, rgba(234,246,253,1) 100%); 
   }
   
+  .sidebar li {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .sidebar li:hover {
+    border-radius: 4px;
+    outline: solid 1px #3c7fb1;
+    background: rgb(167,217,245);
+    background: linear-gradient(0deg, rgba(167,217,245,1) 0%, rgb(175, 215, 238) 29%, rgba(188,229,252,1) 49%, rgba(217,240,252,1) 49%, rgb(213, 232, 243) 69%, rgba(234,246,253,1) 100%); 
+  }
