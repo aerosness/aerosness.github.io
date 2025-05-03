@@ -55,7 +55,7 @@ const InfoContent = () => {
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginTop: '35px' }}>
           <h2 style={{ margin: '0 0 5px 0' }}>Semyon</h2>
           <p style={{ margin: '0 0 5px 0' }}>he/him</p>
-          <p style={{ margin: '0 0 5px 0' }}>16 years</p>
+          <p style={{ margin: '0 0 5px 0' }}>17 years</p>
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
             <img
               src="resources/img/pin.png"
