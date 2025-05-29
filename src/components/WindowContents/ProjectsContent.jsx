@@ -3,16 +3,22 @@ import React from 'react';
 const ProjectsContent = () => {
   const projects = [
     {
-      title: 'Radeon Site Knockoff',
-      image: 'resources/img/project1.png',
-      description: 'Full-Stack Django app that is inspired by the AMD Radeon graphics card official website. ',
-      github: 'https://github.com/aerosness/radeon-site-knockoff',
+      title: 'OutfiTunes',
+      image: 'resources/img/project8.png',
+      description: 'Web app that creates personalized outfit ideas based on your spotify playlists. Built using React+Spotify API',
+      github: 'https://github.com/aerosness/outfitunes',
     },
     {
       title: 'aerosness.github.io',
       image: 'resources/img/project2.png',
       description: 'Literally the website you’re on right now! Built using React, with the windows 7/fruiteger aero aesthetics',
       github: 'https://github.com/aerosness/aerosness.github.io',
+    },
+    {
+      title: 'Radeon Site Knockoff',
+      image: 'resources/img/project1.png',
+      description: 'Full-Stack Django app that is inspired by the AMD Radeon graphics card official website. ',
+      github: 'https://github.com/aerosness/radeon-site-knockoff',
     },
     {
       title: 'Weather App',
@@ -44,7 +50,6 @@ const ProjectsContent = () => {
       description: 'Unity demo showcasing an AI car script that I developed as part of a team during the 3-day Decentrathon 2024',
       github: 'https://github.com/aerosness/Decentrathon-2.0',
     },
-
   ];
 
   return (
