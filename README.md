@@ -1,4 +1,4 @@
-Windows 7 Portfolio built on React
+Windows 7 styled portfolio website built on React
 
 Live at: https://aerosness.github.io
 
