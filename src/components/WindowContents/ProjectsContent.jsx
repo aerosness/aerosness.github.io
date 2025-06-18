@@ -7,7 +7,7 @@ const ProjectsContent = () => {
       image: 'resources/img/project8.png',
       description: 'Web app that creates personalized outfit ideas based on your spotify playlists. Built using React+Spotify API',
       github: 'https://github.com/aerosness/outfitunes',
-      live: 'https://outfitunes.vercel.app'
+      live: 'https://outfitunes.com'
     },
     {
       title: 'aerosness.github.io',
