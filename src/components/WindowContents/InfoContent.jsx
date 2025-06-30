@@ -86,6 +86,13 @@ const InfoContent = () => {
                 style={{ width: '24px', height: '24px' }}
               />
             </a>
+            <a href="https://aerosness.github.io/Semyon_Tyo.pdf" target="_blank" rel="noopener noreferrer" style={{marginLeft: '-5px'}}>
+              <img
+                src="resources/img/cv.png"
+                alt="Telegram"
+                style={{ width: '28px', height: '24px' }}
+              />
+            </a>
           </div>
         </div>
       </div>
