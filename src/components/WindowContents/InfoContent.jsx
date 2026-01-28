@@ -39,7 +39,7 @@ const InfoContent = () => {
             }}
           />
           <img
-            src="resources/img/pfp.jpg"
+            src="resources/img/pfp2.jpg"
             alt="Profile"
             style={{
               position: 'absolute',
@@ -111,7 +111,7 @@ const InfoContent = () => {
         <p style={{ margin: 0, textAlign: 'center', opacity: '100%' }}>
           {/*Тотально переписать и переделать*/}
           Hi! This site is my portfolio/website styled like Windows 7.
-          I'm mostly a web developer with a passion for creating innovative and impactful applications❤️
+          This site is mostly about me as a web developer but i also do some other cool things too❤️
         </p>
       </div>
       

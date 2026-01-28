@@ -363,20 +363,20 @@ const LinksContent = () => {
                 Roblox
               </p>
             </a>
-            <a target="_blank" href="https://x.com/aerosness">
+            <a target="_blank" href="https://www.instagram.com/aerosness">
               <img
                 style={{ maxWidth: '50px', maxHeight: '50px' }}
-                src="resources/img/xicon.png"
-                alt="X (Twitter)"
+                src="resources/img/instalogo.png"
+                alt="Instagram"
               />
               <p
                 style={{
                   textAlign: 'center',
                   position: 'absolute',
-                  marginLeft: '20px',
+                  marginLeft: '-7px',
                 }}
               >
-                X
+                Instagram
               </p>
             </a>
           </div>

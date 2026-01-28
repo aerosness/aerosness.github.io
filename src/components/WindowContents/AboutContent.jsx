@@ -9,11 +9,11 @@ const AboutContent = () => {
     }}>
       <div className="content-wrapper">
         <h2 className="section-title">About Me</h2>
-        <p>👋 Hey there! I'm a web developer focused on front-end technologies.</p>
+        <p>👋 Hi there! I'm a web developer currently focused on front-end technologies.</p>
         <p>💻 My expertise lies in <b>React.js</b>, <b>JavaScript</b>, and modern web development.</p>
         <p>🚀 I enjoy building interactive and visually appealing web applications.</p>
 
-        <h3>My Interests</h3>
+        <h3>My Tech Interests</h3>
         <ul>
           <li>⚛️ Modern Front-End Frameworks</li>
           <li>⚙️ Lightweight Backend Solutions</li>
@@ -38,8 +38,9 @@ const AboutContent = () => {
         <h3>Hobbies</h3>
         <div className="hobbies">
           <div className="hobby-item">🎮 Gaming & Game Development</div>
-          <div className="hobby-item">🎤 Rap Music</div>
-          <div className="hobby-item">🎨 Photoshop Edits</div>
+          <div className="hobby-item">🎵 Music Production</div>
+          <div className="hobby-item">🎨 Visual and Video Editing</div>
+          <div className="hobby-item">📸 Photography</div>
         </div>
       </div>
     </div>
