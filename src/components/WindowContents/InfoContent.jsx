@@ -126,16 +126,11 @@ const InfoContent = () => {
           gap: '25px',
         }}
       >
-        <img
-          src="resources/img/advert1.png"
+        <a target="_blank" href="https://www.youtube.com/watch?v=xHXG6G5PZnQ"><img
+          src="resources/img/aerotv.png"
           alt="Advert 1"
           style={{ maxWidth: '300px', maxHeight: '150px' }}
-        />
-        <img
-          src="resources/img/advert2.png"
-          alt="Advert 2"
-          style={{ maxWidth: '300px', maxHeight: '150px' }}
-        />
+        /></a>
       </div>
     </div>
   );
