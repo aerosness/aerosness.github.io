@@ -1,12 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 const Window = ({ windowData, bringToFront, updateWindow, closeWindow, children }) => {
   const windowRef = useRef(null);
   const [dragging, setDragging] = useState(false);
   const [relPos, setRelPos] = useState({ x: 0, y: 0 });
+  const isMobile = useIsMobile();
 
   // начинание перетаскивания при зажатию заголовка
   const onMouseDown = (e) => {
+    if (isMobile) return;
     if (e.target.closest('.title-bar')) {
       const rect = windowRef.current.getBoundingClientRect();
       setRelPos({
@@ -31,8 +34,9 @@ const Window = ({ windowData, bringToFront, updateWindow, closeWindow, children 
     setDragging(false);
   };
 
-  // --- Добавлено: обработка касаний для мобильных устройств ---
+  // обработка касаний для мобильных устройств не телефонов
   const onTouchStart = (e) => {
+    if (isMobile) return;
     if (e.target.closest('.title-bar')) {
       const touch = e.touches[0];
       const rect = windowRef.current.getBoundingClientRect();
@@ -57,6 +61,28 @@ const Window = ({ windowData, bringToFront, updateWindow, closeWindow, children 
     setDragging(false);
   };
   // --- Конец добавления касания ---
+
+  const style = (windowData.isMaximized || isMobile)
+  ? {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100vw',
+      height: 'calc(100vh - 40px)',
+      zIndex: windowData.zIndex,
+      borderRadius: 0,
+    }
+  : {
+      position: 'absolute',
+      top: windowData.position.top,
+      left: windowData.position.left,
+      width: windowData.size.width,
+      height:
+        typeof windowData.size.height === 'number'
+          ? windowData.size.height + 'px'
+          : windowData.size.height,
+      zIndex: windowData.zIndex,
+    };
 
   useEffect(() => {
     if (dragging) {
@@ -98,27 +124,6 @@ const Window = ({ windowData, bringToFront, updateWindow, closeWindow, children 
     closeWindow(windowData.id);
   };
 
-  const style = windowData.isMaximized
-    ? {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: 'calc(100vh - 40px)',
-        zIndex: windowData.zIndex,
-      }
-    : {
-        position: 'absolute',
-        top: windowData.position.top,
-        left: windowData.position.left,
-        width: windowData.size.width,
-        height:
-          typeof windowData.size.height === 'number'
-            ? windowData.size.height + 'px'
-            : windowData.size.height,
-        zIndex: windowData.zIndex,
-      };
-
   return (
     <div
       ref={windowRef}
@@ -131,7 +136,7 @@ const Window = ({ windowData, bringToFront, updateWindow, closeWindow, children 
         <div className="title-bar-text">{windowData.title}</div>
         <div className="title-bar-controls">
           <button aria-label="Minimize" onClick={handleMinimize}></button>
-          <button aria-label="Maximize" onClick={handleMaximize}></button>
+          {!isMobile && <button aria-label="Maximize" onClick={handleMaximize}></button>}
           <button aria-label="Close" onClick={handleClose}></button>
         </div>
       </div>
