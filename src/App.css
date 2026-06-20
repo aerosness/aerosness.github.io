@@ -788,3 +788,118 @@ transform: translateX(50%) translateY(-50px) scale(0.7);
     background: rgb(167,217,245);
     background: linear-gradient(0deg, rgba(167,217,245,1) 0%, rgb(175, 215, 238) 29%, rgba(188,229,252,1) 49%, rgba(217,240,252,1) 49%, rgb(213, 232, 243) 69%, rgba(234,246,253,1) 100%); 
   }
+
+  /* ============ Поддержка телефонов ============ */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+@media (max-width: 768px) {
+  .window {
+    border-radius: 0 !important;
+  }
+
+  .window-body {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Таскбар: иконки мельче, скролл если не влезают */
+  .taskbaricons {
+    left: 55px;
+    max-width: calc(100vw - 110px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .taskbaricons::-webkit-scrollbar {
+    display: none;
+  }
+
+  .taskbarbutton,
+  .taskbarbutton:hover {
+    width: 46px;
+    height: 36px;
+  }
+
+  .taskbarbutton > img {
+    width: 26px;
+  }
+
+  .datetime {
+    right: 8px !important;
+    font-size: 10px !important;
+  }
+
+  .aeropeek {
+    width: 8px;
+  }
+
+  /* Старт-меню — на весь экран */
+  .start {
+    width: 100vw;
+    height: calc(100vh - 43px);
+    bottom: 43px;
+    left: 0;
+    border-radius: 0;
+  }
+
+  .startinner {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    height: 65%;
+  }
+
+  .startrightcontainer {
+    position: relative;
+    width: 100%;
+    height: 35%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 10px 0;
+  }
+
+  .startprofileimage {
+    position: relative;
+    right: auto;
+    transform: scale(0.6);
+  }
+
+  .startmenuexplorebuttons {
+    position: relative;
+    top: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  /* Иконки рабочего стола в сетку */
+  .desktop {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: calc(100vw - 10px);
+    height: auto;
+    top: 8px;
+  }
+
+  .desktopicon {
+    width: 70px !important;
+    height: 65px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .taskbarbutton {
+    width: 40px;
+  }
+  .datetime {
+    display: none;
+  }
+}

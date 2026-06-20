@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 const Taskbar = ({
   windows,
@@ -12,6 +13,7 @@ const Taskbar = ({
   const taskbarIconsRef = useRef(null);
   const startMenuRef = useRef(null);
   const [showStartMenu, setShowStartMenu] = useState(false);
+  const isMobile = useIsMobile();
 
   // логика даты и времени боже храни джаваскрипт
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -30,8 +32,9 @@ const Taskbar = ({
     day: 'numeric',
   });
 
-  // градиентик иконок при наведении очень сложно и очень необезательно но я в инете увидел прикольно
+  // градиентик иконок при наведении
   useEffect(() => {
+    if (isMobile) return;
     const handleMouseMove = (e) => {
       if (!taskbarIconsRef.current) return;
 
@@ -208,7 +211,7 @@ const Taskbar = ({
                 alt="Avatar Frame"
               />
               <img
-                src="resources/img/pfp.jpg"
+                src="resources/img/pfp2.jpg"
                 className="profileimg"
                 alt="Profile"
               />
