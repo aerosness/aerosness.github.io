@@ -54,40 +54,24 @@ const ProjectsContent = () => {
   ];
 
   return (
-    <div style={{ 
-      padding: '20px', 
-      backgroundImage: 'url(resources/img/projectsbg.png)',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-    }}>
+    <div
+      style={{
+        padding: '20px',
+        backgroundImage: 'url(resources/img/projectsbg.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
       <h1 style={{ marginBottom: '20px' }}>My Projects</h1>
       {projects.map((project, index) => (
         <div
-        key={index}
-        style={{
-          position: 'relative',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          padding: '10px',
-          marginBottom: '15px',
-          overflow: 'hidden', // чтобы фон не выходил за границы
-        }}
-      >
-        <div
+          key={index}
+          className="aero-glass"
           style={{
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(255, 255, 255, 0.5)',
-            backdropFilter: 'blur(5px)',
-            zIndex: 0,
+            padding: '10px',
+            marginBottom: '15px',
           }}
-        ></div>
-      
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        >
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
             <h2 style={{ margin: 0, flex: 1, fontSize: '18px' }}>{project.title}</h2>
             <img
@@ -95,7 +79,7 @@ const ProjectsContent = () => {
               alt={project.title}
               style={{
                 width: '200px',
-                height: 'calc(200px * 9 / 16)', // 16:9
+                height: 'calc(200px * 9 / 16)',
                 objectFit: 'cover',
                 marginLeft: '10px',
                 borderRadius: '4px',
@@ -104,28 +88,42 @@ const ProjectsContent = () => {
           </div>
           <p style={{ margin: '0 0 5px 0' }}>{project.description}</p>
           {project.github && (
-            <a
+            <a  
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: '#2196f3', textDecoration: 'none' }}
+              className="project-link"
             >
               Github
             </a>
           )}
           {project.live && (
-            <a
+            <a  
               href={project.live}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: '#2196f3', textDecoration: 'none', marginLeft: '15px' }}
+              className="project-link"
+              style={{ marginLeft: '15px' }}
             >
               Live
             </a>
           )}
         </div>
-      </div>
       ))}
+
+      <style>{`
+        .project-link {
+          color: #1a1a1a;
+          font-weight: 600;
+          text-decoration: none;
+          border-bottom: 1px solid rgba(0,0,0,0.4);
+          transition: border-color 0.2s ease, opacity 0.2s ease;
+        }
+        .project-link:hover {
+          border-color: rgba(0,0,0,0.9);
+          opacity: 0.75;
+        }
+      `}</style>
     </div>
   );
 };
