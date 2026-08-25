@@ -154,7 +154,7 @@ const App = () => {
               {w.id === 'links' ? (
                 <LinksContent />
               ) : w.id === 'info' ? (
-                <InfoContent />
+                <InfoContent openWindow={openWindow} />
               ) : w.id === 'projects' ? (
                 <ProjectsContent />
               ) : w.id === 'about' ? (

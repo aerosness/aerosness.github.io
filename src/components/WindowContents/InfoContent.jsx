@@ -1,6 +1,6 @@
 import React from 'react';
 
-const InfoContent = () => {
+const InfoContent = ({ openWindow }) => {
   const quickFacts = [
     { icon: '⚛️', label: 'Stack', value: 'React, JS, Python' },
     { icon: '📍', label: 'Based in', value: 'Fort Collins, CO' },
@@ -107,6 +107,12 @@ const InfoContent = () => {
           <div
             key={i}
             className="aero-glass nav-tile"
+            role="button"
+            tabIndex={0}
+            onClick={() => openWindow && openWindow(s.label.toLowerCase())}
+            onKeyPress={(e) => {
+              if ((e.key === 'Enter' || e.key === ' ') && openWindow) openWindow(s.label.toLowerCase());
+            }}
             style={{ flex: 1, padding: '10px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
           >
             <img src={s.icon} alt={s.label} style={{ width: '24px', height: '24px' }} />
