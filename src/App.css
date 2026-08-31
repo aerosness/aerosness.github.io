@@ -998,6 +998,7 @@ img {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 14px;
+  filter: brightness(0) invert(1);
 }
 
 .title-bar-controls button:first-child {
