@@ -36,20 +36,6 @@ export const creativeLinks = [
     description: 'Videos and creative work',
     newTab: true,
   },
-  {
-    label: 'Instagram',
-    href: 'https://www.instagram.com/aerosness',
-    icon: '/resources/optimized/logos/instalogo.webp',
-    description: 'Photos and visual work',
-    newTab: true,
-  },
-  {
-    label: 'TikTok',
-    href: 'https://www.tiktok.com/@aerosness',
-    icon: '/resources/optimized/logos/tiktoklogo.webp',
-    description: 'Short-form creative work',
-    newTab: true,
-  },
 ];
 
 export const skillGroups = [
