@@ -984,7 +984,7 @@ img {
   padding: 0;
   border: 0;
   border-radius: 0;
-  outline: 1px solid #000;
+  outline: 1px solid #fff;
   cursor: default;
   background-color: transparent;
   background-image: none;
@@ -998,7 +998,6 @@ img {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 14px;
-  filter: brightness(0) invert(1);
 }
 
 .title-bar-controls button:first-child {
