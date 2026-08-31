@@ -1,151 +1,186 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { useIsMobile } from '../hooks/useIsMobile';
+import { useEffect, useId, useRef } from 'react';
+import { getWindowLayout } from '../state/windowManager';
 
-const Window = ({ windowData, bringToFront, updateWindow, closeWindow, children }) => {
+function Window({
+  windowData,
+  viewport,
+  isActive,
+  interactionEnabled,
+  onFocusWindow,
+  onMoveWindow,
+  onMinimizeWindow,
+  onToggleMaximize,
+  onCloseWindow,
+  children,
+}) {
   const windowRef = useRef(null);
-  const [dragging, setDragging] = useState(false);
-  const [relPos, setRelPos] = useState({ x: 0, y: 0 });
-  const isMobile = useIsMobile();
-
-  // начинание перетаскивания при зажатию заголовка
-  const onMouseDown = (e) => {
-    if (isMobile) return;
-    if (e.target.closest('.title-bar')) {
-      const rect = windowRef.current.getBoundingClientRect();
-      setRelPos({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      });
-      setDragging(true);
-      bringToFront(windowData.id);
-    }
-  };
-
-  // обработка движении мыши
-  const onMouseMove = (e) => {
-    if (!dragging || windowData.isMaximized) return;
-    const newLeft = e.clientX - relPos.x;
-    const newTop = e.clientY - relPos.y;
-    updateWindow(windowData.id, { position: { top: newTop, left: newLeft } });
-  };
-
-  // завершение перетаскивания
-  const onMouseUp = () => {
-    setDragging(false);
-  };
-
-  // обработка касаний для мобильных устройств не телефонов
-  const onTouchStart = (e) => {
-    if (isMobile) return;
-    if (e.target.closest('.title-bar')) {
-      const touch = e.touches[0];
-      const rect = windowRef.current.getBoundingClientRect();
-      setRelPos({
-        x: touch.clientX - rect.left,
-        y: touch.clientY - rect.top,
-      });
-      setDragging(true);
-      bringToFront(windowData.id);
-    }
-  };
-
-  const onTouchMove = (e) => {
-    if (!dragging || windowData.isMaximized) return;
-    const touch = e.touches[0];
-    const newLeft = touch.clientX - relPos.x;
-    const newTop = touch.clientY - relPos.y;
-    updateWindow(windowData.id, { position: { top: newTop, left: newLeft } });
-  };
-
-  const onTouchEnd = () => {
-    setDragging(false);
-  };
-  // --- Конец добавления касания ---
-
-  const style = (windowData.isMaximized || isMobile)
-  ? {
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100vw',
-      height: 'calc(100vh - 40px)',
-      zIndex: windowData.zIndex,
-      borderRadius: 0,
-    }
-  : {
-      position: 'absolute',
-      top: windowData.position.top,
-      left: windowData.position.left,
-      width: windowData.size.width,
-      height:
-        typeof windowData.size.height === 'number'
-          ? windowData.size.height + 'px'
-          : windowData.size.height,
-      zIndex: windowData.zIndex,
-    };
+  const dragStateRef = useRef(null);
+  const focusRequestedRef = useRef(false);
+  const titleId = useId();
+  const isCompact = viewport.width <= 768;
+  const layout = getWindowLayout(windowData, viewport, isCompact);
 
   useEffect(() => {
-    if (dragging) {
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
-      document.addEventListener('touchmove', onTouchMove);
-      document.addEventListener('touchend', onTouchEnd);
-    } else {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-      document.removeEventListener('touchmove', onTouchMove);
-      document.removeEventListener('touchend', onTouchEnd);
+    if (!isActive) {
+      return;
     }
-    return () => {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-      document.removeEventListener('touchmove', onTouchMove);
-      document.removeEventListener('touchend', onTouchEnd);
+
+    focusRequestedRef.current = false;
+
+    if (
+      interactionEnabled &&
+      windowRef.current &&
+      !windowRef.current.contains(document.activeElement)
+    ) {
+      windowRef.current.focus({ preventScroll: true });
+    }
+  }, [interactionEnabled, isActive]);
+
+  const requestFocus = () => {
+    if (!isActive && !focusRequestedRef.current) {
+      focusRequestedRef.current = true;
+      onFocusWindow(windowData.id);
+    }
+  };
+
+  const beginDrag = (event) => {
+    if (
+      isCompact ||
+      windowData.isMaximized ||
+      event.button !== 0 ||
+      event.target.closest('.title-bar-controls')
+    ) {
+      return;
+    }
+
+    const windowRectangle = windowRef.current?.getBoundingClientRect();
+    if (!windowRectangle) {
+      return;
+    }
+
+    dragStateRef.current = {
+      pointerId: event.pointerId,
+      offsetX: event.clientX - windowRectangle.left,
+      offsetY: event.clientY - windowRectangle.top,
     };
-  }, [dragging, relPos]);
-
-  // обработчики кнопок окна
-  const handleMinimize = () => {
-    updateWindow(windowData.id, { visible: false });
+    event.currentTarget.setPointerCapture(event.pointerId);
+    event.preventDefault();
   };
 
-  const handleMaximize = () => {
-    if (windowData.isMaximized) {
-      updateWindow(windowData.id, {
-        isMaximized: false,
-      });
-    } else {
-      updateWindow(windowData.id, { isMaximized: true });
+  const continueDrag = (event) => {
+    const dragState = dragStateRef.current;
+    if (!dragState || dragState.pointerId !== event.pointerId) {
+      return;
     }
-    bringToFront(windowData.id);
+
+    onMoveWindow(windowData.id, {
+      left: event.clientX - dragState.offsetX,
+      top: event.clientY - dragState.offsetY,
+    });
   };
 
-  const handleClose = () => {
-    closeWindow(windowData.id);
+  const endDrag = (event) => {
+    if (dragStateRef.current?.pointerId !== event.pointerId) {
+      return;
+    }
+
+    dragStateRef.current = null;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
   };
+
+  const handleTitleBarDoubleClick = (event) => {
+    if (!isCompact && !event.target.closest('.title-bar-controls')) {
+      onToggleMaximize(windowData.id);
+    }
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Escape' && isActive) {
+      event.preventDefault();
+      event.stopPropagation();
+      onCloseWindow(windowData.id);
+    }
+  };
+
+  const windowStyle = {
+    ...layout,
+    zIndex: windowData.zIndex,
+    overflow: 'hidden',
+  };
+  const titleBarHeight = isCompact ? 40 : 30;
+  const bodyHeight =
+    layout.height === 'auto'
+      ? 'auto'
+      : `calc(100% - ${titleBarHeight}px)`;
+  const bodyMaxHeight = Math.max(0, layout.maxHeight - titleBarHeight);
 
   return (
-    <div
+    <section
       ref={windowRef}
-      className="window"
-      style={style}
-      onMouseDown={() => bringToFront(windowData.id)}
+      className={`window ${isActive ? 'window-active' : 'window-inactive'}`}
+      style={windowStyle}
+      role="dialog"
+      aria-labelledby={titleId}
+      aria-describedby={`${titleId}-body`}
+      data-window-id={windowData.id}
+      data-window-state={windowData.isMaximized ? 'maximized' : 'restored'}
+      tabIndex={-1}
+      onPointerDown={requestFocus}
+      onFocusCapture={requestFocus}
+      onKeyDown={handleKeyDown}
     >
-      <div className="title-bar" onMouseDown={onMouseDown} onTouchStart={onTouchStart}>
-        <img aria-label="windowicon" src={windowData.icon} alt="icon" />
-        <div className="title-bar-text">{windowData.title}</div>
-        <div className="title-bar-controls">
-          <button aria-label="Minimize" onClick={handleMinimize}></button>
-          {!isMobile && <button aria-label="Maximize" onClick={handleMaximize}></button>}
-          <button aria-label="Close" onClick={handleClose}></button>
+      <header
+        className="title-bar"
+        style={{ touchAction: isCompact ? 'auto' : 'none' }}
+        onPointerDown={beginDrag}
+        onPointerMove={continueDrag}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onDoubleClick={handleTitleBarDoubleClick}
+      >
+        <img
+          aria-hidden="true"
+          aria-label="windowicon"
+          src={windowData.icon}
+          alt=""
+          draggable="false"
+        />
+        <div id={titleId} className="title-bar-text">
+          {windowData.title}
         </div>
-      </div>
+        <div className="title-bar-controls">
+          <button
+            type="button"
+            aria-label={`Minimize ${windowData.title} window`}
+            title="Minimize"
+            onClick={() => onMinimizeWindow(windowData.id)}
+          />
+          {!isCompact && (
+            <button
+              type="button"
+              aria-label={`${windowData.isMaximized ? 'Restore' : 'Maximize'} ${windowData.title} window`}
+              title={windowData.isMaximized ? 'Restore' : 'Maximize'}
+              onClick={() => onToggleMaximize(windowData.id)}
+            />
+          )}
+          <button
+            type="button"
+            aria-label={`Close ${windowData.title} window`}
+            title="Close"
+            onClick={() => onCloseWindow(windowData.id)}
+          />
+        </div>
+      </header>
       <div
+        id={`${titleId}-body`}
         className="window-body"
         style={{
           backgroundColor: '#fff',
           width: '100%',
-          height: 'calc(100% - 30px)',
+          height: bodyHeight,
+          maxHeight: bodyMaxHeight,
           overflow: 'auto',
           border: 'none',
           outline: 'none',
@@ -153,8 +188,8 @@ const Window = ({ windowData, bringToFront, updateWindow, closeWindow, children 
       >
         {children}
       </div>
-    </div>
+    </section>
   );
-};
+}
 
 export default Window;

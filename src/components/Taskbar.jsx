@@ -1,27 +1,232 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useIsMobile } from '../hooks/useIsMobile';
+import { useEffect, useRef, useState } from 'react';
+import { isWindowOpen, isWindowVisible } from '../state/windowManager';
 
-const Taskbar = ({
+const startMenuIconStyle = {
+  marginRight: '5px',
+  width: '40px',
+  height: '40px',
+};
+
+const leftStartMenuItems = [
+  {
+    id: 'info',
+    label: 'Info',
+    icon: '/resources/optimized/icons/help-64.webp',
+  },
+  {
+    id: 'links',
+    label: 'Links',
+    icon: '/resources/optimized/icons/folder-64.webp',
+  },
+  {
+    id: 'projects',
+    label: 'Projects',
+    icon: '/resources/optimized/icons/projects-64.webp',
+  },
+  {
+    id: 'about',
+    label: 'About Me',
+    icon: '/resources/optimized/icons/information-64.webp',
+  },
+];
+
+const rightStartMenuItems = [
+  { id: 'info', label: 'Info' },
+  { id: 'links', label: 'Links' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'about', label: 'About Me' },
+];
+
+function getVisibleStartMenuItems(menu) {
+  if (!menu) {
+    return [];
+  }
+
+  const orderedItems = [
+    ...menu.querySelectorAll('.startinner [role="menuitem"]'),
+    ...menu.querySelectorAll('.startrightcontainer [role="menuitem"]'),
+  ];
+
+  return orderedItems.filter((item) => item.getClientRects().length > 0);
+}
+
+function getTaskbarActionLabel(windowData, activeWindowId) {
+  if (isWindowVisible(windowData)) {
+    return activeWindowId === windowData.id
+      ? `Minimize ${windowData.title}`
+      : `Switch to ${windowData.title}`;
+  }
+
+  return `${isWindowOpen(windowData) ? 'Restore' : 'Open'} ${windowData.title}`;
+}
+
+function cacheTaskbarIconColor(event) {
+  const icon = event.currentTarget;
+  const taskbarButton = icon.closest('.taskbarbutton');
+  if (!taskbarButton || taskbarButton.dataset.iconColorReady === 'true') {
+    return;
+  }
+
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = 16;
+    canvas.height = 16;
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    if (!context) {
+      return;
+    }
+
+    context.drawImage(icon, 0, 0, canvas.width, canvas.height);
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    let red = 0;
+    let green = 0;
+    let blue = 0;
+    let visiblePixels = 0;
+
+    for (let index = 0; index < pixels.length; index += 4) {
+      if (pixels[index + 3] === 0) {
+        continue;
+      }
+
+      red += pixels[index];
+      green += pixels[index + 1];
+      blue += pixels[index + 2];
+      visiblePixels += 1;
+    }
+
+    if (visiblePixels > 0) {
+      const brighten = (channel) =>
+        Math.min(255, Math.round((channel / visiblePixels) * 1.5));
+      taskbarButton.style.setProperty(
+        '--img-colour',
+        `rgb(${brighten(red)}, ${brighten(green)}, ${brighten(blue)})`,
+      );
+      taskbarButton.dataset.iconColorReady = 'true';
+    }
+  } catch {
+    // The glow is decorative; a browser that cannot sample the icon can skip it.
+  }
+}
+
+function updateTaskbarPointerGlow(event) {
+  const rectangle = event.currentTarget.getBoundingClientRect();
+  event.currentTarget.style.setProperty(
+    '--mouse-x',
+    `${event.clientX - rectangle.left}px`,
+  );
+  event.currentTarget.style.setProperty(
+    '--mouse-y',
+    `${event.clientY - rectangle.top}px`,
+  );
+}
+
+function Taskbar({
   windows,
   activeWindowId,
-  toggleWindowVisibility,
-  bringToFront,
-  hideAllWindows,
-  openWindow,
-  minimizeWindow, // функция минимизации окна (устанавливает visible: false)
-}) => {
-  const taskbarIconsRef = useRef(null);
+  isShowingDesktop,
+  isCompact,
+  onOpenWindow,
+  onTaskbarWindow,
+  onShowDesktop,
+}) {
+  const startButtonRef = useRef(null);
   const startMenuRef = useRef(null);
   const [showStartMenu, setShowStartMenu] = useState(false);
-  const isMobile = useIsMobile();
-
-  // логика даты и времени боже храни джаваскрипт
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState(() => new Date());
 
   useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
+    let minuteInterval = null;
+    const millisecondsUntilNextMinute =
+      60_000 - (Date.now() % 60_000) + 50;
+    const minuteTimeout = window.setTimeout(() => {
+      setCurrentTime(new Date());
+      minuteInterval = window.setInterval(
+        () => setCurrentTime(new Date()),
+        60_000,
+      );
+    }, millisecondsUntilNextMinute);
+
+    return () => {
+      window.clearTimeout(minuteTimeout);
+      if (minuteInterval !== null) {
+        window.clearInterval(minuteInterval);
+      }
+    };
   }, []);
+
+  useEffect(() => {
+    if (!showStartMenu) {
+      return undefined;
+    }
+
+    const focusFrame = window.requestAnimationFrame(() => {
+      getVisibleStartMenuItems(startMenuRef.current)[0]?.focus({
+        preventScroll: true,
+      });
+    });
+
+    const handlePointerDownOutside = (event) => {
+      const clickWasOnStartButton = startButtonRef.current?.contains(
+        event.target,
+      );
+      const clickWasInStartMenu = startMenuRef.current?.contains(event.target);
+
+      if (!clickWasOnStartButton && !clickWasInStartMenu) {
+        setShowStartMenu(false);
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setShowStartMenu(false);
+        startButtonRef.current?.focus({ preventScroll: true });
+      }
+    };
+
+    document.addEventListener('pointerdown', handlePointerDownOutside);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      window.cancelAnimationFrame(focusFrame);
+      document.removeEventListener('pointerdown', handlePointerDownOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [showStartMenu]);
+
+  const openStartMenuItem = (id) => {
+    setShowStartMenu(false);
+    onOpenWindow(id);
+  };
+
+  const handleStartMenuKeyDown = (event) => {
+    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+      return;
+    }
+
+    const menuItems = getVisibleStartMenuItems(startMenuRef.current);
+    if (menuItems.length === 0) {
+      return;
+    }
+
+    event.preventDefault();
+    const currentIndex = menuItems.indexOf(document.activeElement);
+    let nextIndex;
+
+    if (event.key === 'Home') {
+      nextIndex = 0;
+    } else if (event.key === 'End') {
+      nextIndex = menuItems.length - 1;
+    } else if (event.key === 'ArrowDown') {
+      nextIndex = (currentIndex + 1 + menuItems.length) % menuItems.length;
+    } else {
+      nextIndex =
+        (currentIndex - 1 + menuItems.length) % menuItems.length;
+    }
+
+    menuItems[nextIndex].focus();
+  };
+
   const timeString = currentTime.toLocaleTimeString([], {
     hour: '2-digit',
     minute: '2-digit',
@@ -32,146 +237,63 @@ const Taskbar = ({
     day: 'numeric',
   });
 
-  // градиентик иконок при наведении
-  useEffect(() => {
-    if (isMobile) return;
-    const handleMouseMove = (e) => {
-      if (!taskbarIconsRef.current) return;
-
-      // чекаем иконки
-      const cards = taskbarIconsRef.current.querySelectorAll('.taskbarbutton');
-
-      cards.forEach((card) => {
-        // Получаем иконку внутри кнопки
-        const taskbarIcon = card.querySelector('.taskbaricon');
-        if (taskbarIcon) {
-          // создаём временный canvas для обработки изображения
-          const canvas = document.createElement('canvas');
-          canvas.width = taskbarIcon.clientWidth;
-          canvas.height = taskbarIcon.clientHeight;
-          const ctx = canvas.getContext('2d');
-
-          // рисуем изображение иконки на canvas
-          ctx.drawImage(taskbarIcon, 0, 0, canvas.width, canvas.height);
-          // чекаем пиксельные данные изображения
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-
-          // ыычисляем средний цвет изображения
-          let totalR = 0, totalG = 0, totalB = 0;
-          for (let i = 0; i < imageData.length; i += 4) {
-            totalR += imageData[i];     // red
-            totalG += imageData[i + 1]; // green
-            totalB += imageData[i + 2]; // blue
-          }
-
-          // колво пикселей (каждый пиксель имеет 4 значения: R, G, B, A)
-          const numPixels = imageData.length / 4;
-          // рассчитываем средние значения цветов
-          const averageR = Math.round(totalR / numPixels);
-          const averageG = Math.round(totalG / numPixels);
-          const averageB = Math.round(totalB / numPixels);
-          // увеличиваем яркость изображения
-          const brightnessMultiplier = 1.5;
-          const brighterR = Math.min(255, averageR * brightnessMultiplier);
-          const brighterG = Math.min(255, averageG * brightnessMultiplier);
-          const brighterB = Math.min(255, averageB * brightnessMultiplier);
-
-          // формируем строку с цветом в формате RGB
-          const brighterColor = `rgb(${brighterR}, ${brighterG}, ${brighterB})`;
-
-          // устанавливаем этот цвет в css
-          card.style.setProperty('--img-colour', brighterColor);
-        }
-        // получаем координаты кнопки на экране
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left; // курсор по иксу относительно кнопки
-        const y = e.clientY - rect.top;  // курсор по y относительно кнопки
-
-        // устанавливаем css переменные используемые для анимации или эффекта
-        card.style.setProperty('--mouse-x', `${x}px`);
-        card.style.setProperty('--mouse-y', `${y}px`);
-      });
-    };
-
-    const taskbarIcons = taskbarIconsRef.current;
-    if (taskbarIcons) {
-      taskbarIcons.addEventListener('mousemove', handleMouseMove);
-    }
-    return () => {
-      if (taskbarIcons) {
-        taskbarIcons.removeEventListener('mousemove', handleMouseMove);
-      }
-    };
-  }, []);
-
-  // если кликаешь вне стартменю пока он окрыт он скрываеться
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (startMenuRef.current && !startMenuRef.current.contains(e.target)) {
-        setShowStartMenu(false);
-      }
-    };
-
-    if (showStartMenu) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showStartMenu]);
-
-  // открытие/закрытие startmenu через кнопку
-  const handleStartMenuApp = (id) => {
-    if (openWindow) {
-      openWindow(id);
-    }
-    setShowStartMenu(false);
-  };
-
   return (
-    <div className="taskbar">
-      {/* кнопка пуск */}
-      <button
-        className="startbutton"
-        onClick={() => setShowStartMenu((prev) => !prev)}
-      ></button>
-      <div className="startorb"></div>
-      {/* иконки */}
-      <div className="taskbaricons" id="taskbaricons" ref={taskbarIconsRef}>
-        {windows.map((w) => (
-          <button
-            key={w.id}
-            className={`taskbarbutton ${
-              activeWindowId === w.id ? 'taskbarfocused' : ''
-            }`}
-            onClick={() => {
-              if (w.visible) {
-                if (activeWindowId === w.id) {
-                  minimizeWindow(w.id);
-                } else {
-                  bringToFront(w.id);
-                }
-              } else {
-                openWindow(w.id);
-              }
-            }}
-          >
-            <img
-              className="taskbaricon"
-              draggable="false"
-              src={w.icon}
-              alt={w.title}
-            />
-          </button>
-        ))}
+    <footer className="taskbar" aria-label="Windows taskbar">
+      <div className="start-control">
+        <button
+          ref={startButtonRef}
+          type="button"
+          className={`startbutton ${showStartMenu ? 'startbuttonactive start-menu-open' : ''}`}
+          aria-label="Start menu"
+          aria-haspopup="menu"
+          aria-expanded={showStartMenu}
+          aria-controls="portfolio-start-menu"
+          title="Start"
+          onClick={() => setShowStartMenu((isOpen) => !isOpen)}
+        />
+        <div className="startorb" aria-hidden="true" />
       </div>
 
-      {/* дата/время */}
-      <div
+      <div className="taskbaricons" role="toolbar" aria-label="Applications">
+        {windows.map((windowData) => {
+          const isActive =
+            isWindowVisible(windowData) &&
+            activeWindowId === windowData.id;
+          const actionLabel = getTaskbarActionLabel(
+            windowData,
+            activeWindowId,
+          );
+
+          return (
+            <button
+              key={windowData.id}
+              type="button"
+              className={`taskbarbutton ${isActive ? 'taskbarfocused' : ''}`}
+              aria-label={actionLabel}
+              aria-pressed={isActive}
+              title={actionLabel}
+              data-window-status={windowData.status}
+              onPointerMove={isCompact ? undefined : updateTaskbarPointerGlow}
+              onClick={() => onTaskbarWindow(windowData.id)}
+            >
+              <img
+                className="taskbaricon"
+                draggable="false"
+                src={windowData.icon}
+                alt=""
+                width="35"
+                height="35"
+                onLoad={cacheTaskbarIconColor}
+              />
+            </button>
+          );
+        })}
+      </div>
+
+      <time
         className="datetime"
+        dateTime={currentTime.toISOString()}
+        aria-label={`${timeString}, ${dateString}`}
         style={{
           position: 'absolute',
           right: '40px',
@@ -188,115 +310,92 @@ const Taskbar = ({
           textAlign: 'center',
         }}
       >
-        <div>{timeString}</div>
-        <div>{dateString}</div>
-      </div>
+        <span aria-hidden="true">{timeString}</span>
+        <span aria-hidden="true">{dateString}</span>
+      </time>
 
-      {/* aeropeek */}
-      <div
-        className="aeropeek"
-        onClick={() => {
-          hideAllWindows();
+      <button
+        type="button"
+        className="aeropeek aeropeek-button"
+        aria-label={isShowingDesktop ? 'Restore open windows' : 'Show desktop'}
+        aria-pressed={isShowingDesktop}
+        title={isShowingDesktop ? 'Restore open windows' : 'Show desktop'}
+        style={{
+          minWidth: 0,
+          minHeight: 0,
+          padding: 0,
+          border: 0,
+          borderRadius: 0,
         }}
-      ></div>
+        onClick={onShowDesktop}
+      />
 
-      {/* виндовс меню */}
       {showStartMenu && (
-        <div ref={startMenuRef} className="start">
-          <div className="startrightcontainer">
-            <div className="profileicon startprofileimage">
+        <div
+          ref={startMenuRef}
+          id="portfolio-start-menu"
+          className="start"
+          role="menu"
+          aria-label="Start menu"
+          onKeyDown={handleStartMenuKeyDown}
+        >
+          <div className="startrightcontainer" role="presentation">
+            <div
+              className="profileicon startprofileimage"
+              aria-hidden="true"
+            >
               <img
-                src="resources/svg/avframe.svg"
+                src="/resources/svg/avframe.svg"
                 className="glass profile-border"
-                alt="Avatar Frame"
+                alt=""
               />
               <img
-                src="resources/img/pfp2.jpg"
+                src="/resources/img/pfp2.jpg"
                 className="profileimg"
-                alt="Profile"
+                alt=""
               />
             </div>
 
-            {/* кнопки приложений */}
-            <div className="startmenuexplorebuttons">
-              <button
-                className="StartMenuButton"
-                onClick={() => handleStartMenuApp('info')}
-              >
-                Info
-              </button>
-              <button
-                className="StartMenuButton"
-                onClick={() => handleStartMenuApp('links')}
-              >
-                Links
-              </button>
-              <button
-                className="StartMenuButton"
-                onClick={() => handleStartMenuApp('projects')}
-              >
-                Projects
-              </button>
-              <button
-                className="StartMenuButton"
-                onClick={() => handleStartMenuApp('about')}
-              >
-                About Me
-              </button>
+            <div className="startmenuexplorebuttons" role="presentation">
+              {rightStartMenuItems.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  role="menuitem"
+                  className="StartMenuButton"
+                  onClick={() => openStartMenuItem(item.id)}
+                >
+                  {item.label}
+                </button>
+              ))}
             </div>
           </div>
-          <div className="startinner">
-            <div className="start-menu-items">
-              <div
-                className="start-menu-item"
-                onClick={() => handleStartMenuApp('info')}
-              >
-                <img
-                  src="resources/ico/help.ico"
-                  alt="Info Icon"
-                  style={{ marginRight: '5px', width: '40px', height: '40px' }}
-                />
-                <span>Info</span>
-              </div>
-              <div
-                className="start-menu-item"
-                onClick={() => handleStartMenuApp('links')}
-              >
-                <img
-                  src="resources/ico/folder.ico"
-                  alt="Links Icon"
-                  style={{ marginRight: '5px', width: '40px', height: '40px' }}
-                />
-                <span>Links</span>
-              </div>
-              <div
-                className="start-menu-item"
-                onClick={() => handleStartMenuApp('projects')}
-              >
-                <img
-                  src="resources/ico/projects.ico"
-                  alt="Projects Icon"
-                  style={{ marginRight: '5px', width: '40px', height: '40px' }}
-                />
-                <span>Projects</span>
-              </div>
-              <div
-                className="start-menu-item"
-                onClick={() => handleStartMenuApp('about')}
-              >
-                <img
-                  src="resources/img/information.png"
-                  alt="About Icon"
-                  style={{ marginRight: '5px', width: '40px', height: '40px' }}
-                />
-                <span>About Me</span>
-              </div>
+          <div className="startinner" role="presentation">
+            <div className="start-menu-items" role="presentation">
+              {leftStartMenuItems.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  role="menuitem"
+                  className="start-menu-item start-menu-item-button"
+                  onClick={() => openStartMenuItem(item.id)}
+                >
+                  <img
+                    src={item.icon}
+                    alt=""
+                    width="40"
+                    height="40"
+                    style={startMenuIconStyle}
+                  />
+                  <span>{item.label}</span>
+                </button>
+              ))}
             </div>
           </div>
         </div>
       )}
-    </div>
+    </footer>
   );
-};
+}
 
 export default Taskbar;

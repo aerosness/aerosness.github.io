@@ -1,131 +1,114 @@
-import React from 'react';
+import { featuredProjects, moreProjects } from '../../data/portfolio';
 
-const ProjectsContent = () => {
-  const projects = [
-    {
-      title: 'OutfiTunes',
-      image: 'resources/img/project8.png',
-      description: 'Web app that creates personalized outfit ideas based on your spotify playlists. Built using React+Spotify API',
-      github: 'https://github.com/aerosness/outfitunes',
-      live: 'https://outfitunes.com'
-    },
-    {
-      title: 'aerosness.github.io',
-      image: 'resources/img/project2.png',
-      description: 'Literally the website you’re on right now! Built using React, with the windows 7/fruiteger aero aesthetics',
-      github: 'https://github.com/aerosness/aerosness.github.io',
-    },
-    {
-      title: 'Radeon Site Knockoff',
-      image: 'resources/img/project1.png',
-      description: 'Full-Stack Django app that is inspired by the AMD Radeon graphics card official website. ',
-      github: 'https://github.com/aerosness/radeon-site-knockoff',
-    },
-    {
-      title: 'Weather App',
-      image: 'resources/img/project3.png',
-      description: 'Mini React application with you can check the weather right now using OpenWeatherAPI, again with windows 7 aesthetic',
-      github: 'https://github.com/aerosness/weather-app',
-    },
-    {
-      title: 'AIESEC Web App',
-      image: 'resources/img/project4.png',
-      description: 'Frontend app for an internetional non-profit organization that was made under 2-day Synapse Creathon',
-      github: 'https://github.com/blxitze/ayan1232008.github.io',
-    },
-    {
-      title: 'Image To Text Converter',
-      image: 'resources/img/project7.png',
-      description: 'Full Stack Web App build on HTML and Flask using easyocr python library',
-      github: 'https://github.com/aerosness/Hackathon-2024',
-    },
-    {
-      title: 'Echoes Of The Past',
-      image: 'resources/img/project5.png',
-      description: 'A Unity game heavily inspired by nomadic culture, created during the Nomad Game Jam',
-      github: 'https://github.com/aerosness/Nomad-Game-Jam',
-    },
-    {
-      title: 'AI Car Game',
-      image: 'resources/img/project6.png',
-      description: 'Unity demo showcasing an AI car script that I developed as part of a team during the 3-day Decentrathon 2024',
-      github: 'https://github.com/aerosness/Decentrathon-2.0',
-    },
-  ];
-
-  return (
-    <div
-      style={{
-        padding: '20px',
-        backgroundImage: 'url(resources/img/projectsbg.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
+const ProjectActions = ({ project }) => (
+  <div className="project-actions" aria-label={`${project.title} links`}>
+    {project.live && (
+      <a
+        className="project-link project-link--primary"
+        href={project.live}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        View live site
+      </a>
+    )}
+    <a
+      className="project-link"
+      href={project.source}
+      target="_blank"
+      rel="noopener noreferrer"
     >
-      <h1 style={{ marginBottom: '20px' }}>My Projects</h1>
-      {projects.map((project, index) => (
-        <div
-          key={index}
-          className="aero-glass"
-          style={{
-            padding: '10px',
-            marginBottom: '15px',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-            <h2 style={{ margin: 0, flex: 1, fontSize: '18px' }}>{project.title}</h2>
-            <img
-              src={project.image}
-              alt={project.title}
-              style={{
-                width: '200px',
-                height: 'calc(200px * 9 / 16)',
-                objectFit: 'cover',
-                marginLeft: '10px',
-                borderRadius: '4px',
-              }}
-            />
-          </div>
-          <p style={{ margin: '0 0 5px 0' }}>{project.description}</p>
-          {project.github && (
-            <a  
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="project-link"
-            >
-              Github
-            </a>
-          )}
-          {project.live && (
-            <a  
-              href={project.live}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="project-link"
-              style={{ marginLeft: '15px' }}
-            >
-              Live
-            </a>
-          )}
-        </div>
-      ))}
+      View source
+    </a>
+  </div>
+);
 
-      <style>{`
-        .project-link {
-          color: #1a1a1a;
-          font-weight: 600;
-          text-decoration: none;
-          border-bottom: 1px solid rgba(0,0,0,0.4);
-          transition: border-color 0.2s ease, opacity 0.2s ease;
-        }
-        .project-link:hover {
-          border-color: rgba(0,0,0,0.9);
-          opacity: 0.75;
-        }
-      `}</style>
+const FeaturedProject = ({ project }) => (
+  <article className="project-card project-card--featured aero-glass">
+    <img
+      className="project-card__image"
+      src={project.image}
+      alt={project.imageAlt}
+      loading="lazy"
+      decoding="async"
+    />
+    <div className="project-card__body">
+      <h3>{project.title}</h3>
+      <p>{project.description}</p>
+      <dl className="project-details">
+        {project.details.map((detail) => (
+          <div key={detail.label}>
+            <dt>{detail.label}</dt>
+            <dd>{detail.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <ProjectActions project={project} />
     </div>
-  );
-};
+  </article>
+);
+
+const MoreProject = ({ project }) => (
+  <article className="project-card project-card--compact aero-glass">
+    <img
+      className="project-card__image"
+      src={project.image}
+      alt={project.imageAlt}
+      loading="lazy"
+      decoding="async"
+    />
+    <div className="project-card__body">
+      <h3>{project.title}</h3>
+      <p>{project.description}</p>
+      <p className="project-tech">{project.tech}</p>
+      <ProjectActions project={project} />
+    </div>
+  </article>
+);
+
+const ProjectsContent = () => (
+  <section className="projects-page window-page" aria-labelledby="projects-heading">
+    <header className="projects-header">
+      <p className="section-eyebrow">Selected work</p>
+      <h1 id="projects-heading">Projects</h1>
+      <p>
+        Web experiences, full-stack tools, and game prototypes built to explore
+        a specific interaction or idea.
+      </p>
+    </header>
+
+    <section className="featured-projects" aria-labelledby="featured-projects-heading">
+      <h2 id="featured-projects-heading">Featured projects</h2>
+      <div className="featured-projects__grid">
+        {featuredProjects.map((project) => (
+          <FeaturedProject key={project.title} project={project} />
+        ))}
+      </div>
+    </section>
+
+    <section className="more-projects" aria-labelledby="more-projects-heading">
+      <div className="section-heading-row">
+        <div>
+          <p className="section-eyebrow">Experiments and events</p>
+          <h2 id="more-projects-heading">More work</h2>
+        </div>
+        <a
+          className="project-link"
+          href="https://github.com/aerosness?tab=repositories"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Browse all repositories
+        </a>
+      </div>
+
+      <div className="more-projects__grid">
+        {moreProjects.map((project) => (
+          <MoreProject key={project.title} project={project} />
+        ))}
+      </div>
+    </section>
+  </section>
+);
 
 export default ProjectsContent;
