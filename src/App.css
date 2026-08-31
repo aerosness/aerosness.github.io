@@ -771,14 +771,8 @@ img {
   list-style: none;
 }
 
-.explorer-sidebar li {
-  margin: 0;
-  padding: 0;
-}
-
 .explorer-sidebar__item {
   display: flex;
-  width: 100%;
   min-width: 0;
   align-items: center;
   gap: 6px;
@@ -788,10 +782,6 @@ img {
   border-radius: 3px;
   color: #293d4b;
   font-size: 0.78rem;
-  text-align: left;
-  cursor: default;
-  background: transparent;
-  box-shadow: none;
 }
 
 .explorer-sidebar__item--level-1 {
@@ -803,15 +793,9 @@ img {
   background: linear-gradient(#eaf8ff, #bddff1);
 }
 
-.explorer-sidebar__item:hover,
-.explorer-sidebar__item:focus-visible {
+.explorer-sidebar__item:hover {
   border-color: #8ab5cf;
   background: linear-gradient(#f4fbff, #d7edf8);
-}
-
-.explorer-sidebar__item:focus-visible {
-  outline: 2px solid #ffbf47;
-  outline-offset: -2px;
 }
 
 .explorer-sidebar__item img {
@@ -895,94 +879,6 @@ img {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 250px));
 }
 
-.explorer-shortcut-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-  gap: 9px;
-}
-
-.explorer-shortcut {
-  display: flex;
-  width: 100%;
-  min-height: 74px;
-  align-items: center;
-  gap: 12px;
-  padding: 11px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  color: #1e3444;
-  text-align: left;
-  cursor: default;
-  background: transparent;
-  box-shadow: none;
-}
-
-.explorer-shortcut:hover,
-.explorer-shortcut:focus-visible {
-  border-color: #65a2c7;
-  background: linear-gradient(#ecf9ff, #cce8f6);
-}
-
-.explorer-shortcut img {
-  width: 46px;
-  height: 46px;
-  flex: 0 0 auto;
-  object-fit: contain;
-}
-
-.explorer-shortcut span {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-}
-
-.explorer-shortcut small {
-  margin-top: 3px;
-  color: #60717d;
-  line-height: 1.3;
-}
-
-.explorer-empty {
-  display: grid;
-  min-height: 230px;
-  place-items: center;
-  align-content: center;
-  padding: 28px;
-  border: 1px dashed #9eb4c1;
-  border-radius: 5px;
-  color: #526875;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.48);
-}
-
-.explorer-empty img {
-  width: 56px;
-  height: 56px;
-  margin-bottom: 10px;
-  object-fit: contain;
-  opacity: 0.72;
-}
-
-.explorer-empty h2,
-.explorer-empty p {
-  margin: 0;
-}
-
-.explorer-empty p {
-  margin-top: 5px;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
 /* Classic Windows 7 chrome
  *
  * Keep the rebuilt window behavior and responsive content, but use the
@@ -990,19 +886,21 @@ img {
  */
 .window,
 .window-inactive {
-  padding: 0;
-  border: solid transparent;
-  border-width: 0 5px 5px;
+  padding: 0 5px 5px;
+  border: 0;
   border-radius: 5px;
   outline: 1px solid #000;
+  background:
+    rgba(182, 216, 251, 0.18)
+    linear-gradient(
+      0deg,
+      rgba(231, 240, 255, 0) 0%,
+      rgba(253, 254, 255, 0) 64%,
+      #fff 65%,
+      #fff 65%,
+      rgba(231, 240, 255, 0) 90%
+    );
   background-color: rgba(70, 162, 255, 0.37);
-  background-image: linear-gradient(
-    0deg,
-    rgba(231, 240, 255, 0) 0%,
-    rgba(253, 254, 255, 0) 64%,
-    #fff 65%,
-    rgba(231, 240, 255, 0) 90%
-  );
   box-shadow:
     0 3px 10px #000,
     inset 0 0 0 1px #fcfcfc;
@@ -1023,9 +921,7 @@ img {
   height: 30px;
   align-items: center;
   justify-content: space-between;
-  gap: 0;
-  padding: 0 4px 0 5px;
-  overflow: hidden;
+  padding: 0;
   cursor: default;
   user-select: none;
   background: transparent;
@@ -1051,20 +947,21 @@ img {
 .title-bar-text {
   position: absolute;
   left: 30px;
-  min-width: 0;
-  max-width: calc(100% - 145px);
-  overflow: hidden;
+  height: min-content;
   color: #101010;
   font-size: 14px;
   font-weight: 400;
   letter-spacing: 0;
-  line-height: 20px;
-  text-overflow: ellipsis;
   text-shadow:
     0 0 10px #fff,
     0 0 10px #fff,
     0 0 10px #fff,
+    0 0 10px #fff,
+    0 0 10px #fff,
+    0 0 10px #fff,
+    0 0 10px #fff,
     0 0 10px #fff;
+  user-select: none;
   white-space: nowrap;
 }
 
