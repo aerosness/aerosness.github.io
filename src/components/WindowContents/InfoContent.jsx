@@ -2,8 +2,11 @@ import { profileLinks } from '../../data/portfolio';
 
 const quickFacts = [
   { label: 'Core stack', value: 'React · JavaScript · Python' },
+  {
+    label: 'Education',
+    value: 'CS freshman at Colorado State University',
+  },
   { label: 'Based in', value: 'Fort Collins, Colorado' },
-  { label: 'Also building', value: 'Unity games and creative tools' },
 ];
 
 const windowShortcuts = [
@@ -41,7 +44,9 @@ const InfoContent = ({ openWindow }) => (
       <div className="info-intro">
         <p className="info-eyebrow">Frontend-focused full-stack developer</p>
         <h1 id="info-heading">Hi, I’m Semyon Tyo.</h1>
-        <p className="info-pronouns">he/him · Fort Collins, Colorado</p>
+        <p className="info-pronouns">
+          he/him · CS freshman at CSU · Fort Collins, Colorado
+        </p>
         <p className="info-lede">
           I build playful React experiences and practical Python-backed tools.
           This portfolio is one of them: a from-scratch tribute to the look and

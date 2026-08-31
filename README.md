@@ -2,7 +2,8 @@
 
 An interactive portfolio that turns a familiar Windows 7-style desktop into a
 home for my projects, background, resume, and contact links. The interface is
-built with React rather than being a static desktop mockup.
+built with React rather than being a static desktop mockup. I’m a Computer
+Science freshman at Colorado State University in Fort Collins, Colorado.
 
 **Live site:** [aerosness.github.io](https://aerosness.github.io/)
 

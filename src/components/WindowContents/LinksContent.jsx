@@ -21,11 +21,19 @@ const LinkCard = ({ link }) => (
       href={link.href}
       target={link.newTab ? '_blank' : undefined}
       rel={link.newTab ? 'noopener noreferrer' : undefined}
+      aria-label={`Open ${link.label}: ${link.description}${
+        link.newTab ? ' (opens in a new tab)' : ''
+      }`}
+      title={`Open ${link.label}`}
+      onPointerDown={(event) => event.stopPropagation()}
     >
-      <img src={link.icon} alt="" />
-      <span>
+      <img src={link.icon} alt="" draggable="false" />
+      <span className="profile-link-card__copy">
         <strong>{link.label}</strong>
         <small>{link.description}</small>
+      </span>
+      <span className="profile-link-card__action" aria-hidden="true">
+        Open
       </span>
     </a>
   </li>
@@ -87,7 +95,7 @@ const LinksContent = () => (
         <section className="creative-links" aria-labelledby="creative-links-heading">
           <div className="section-heading-row">
             <h2 id="creative-links-heading">Creative</h2>
-            <span>{creativeLinks.length} item</span>
+            <span>{creativeLinks.length} items</span>
           </div>
           <ul className="profile-link-grid profile-link-grid--compact">
             {creativeLinks.map((link) => (

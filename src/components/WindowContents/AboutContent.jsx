@@ -10,10 +10,11 @@ const AboutContent = () => (
     <section className="about-story aero-glass" aria-labelledby="about-story-heading">
       <h2 id="about-story-heading">Developer with a creative starting point</h2>
       <p>
-        I’m a developer based in Fort Collins, Colorado. I started by making
-        games, then followed that curiosity into full-stack web development.
-        Today I work mostly in React while continuing to build with Python,
-        Django, Flask, and Unity.
+        I’m a Computer Science freshman at Colorado State University and a
+        developer based in Fort Collins, Colorado. I started by making games,
+        then followed that curiosity into full-stack web development. Today I
+        work mostly in React while continuing to build with Python, Django,
+        Flask, and Unity.
       </p>
       <p>
         I’m drawn to projects where the interface has a point of view. This
