@@ -7,6 +7,13 @@ const startMenuIconStyle = {
   height: '40px',
 };
 
+const classicTaskbarIcons = {
+  info: '/resources/optimized/taskbar/help.png',
+  about: '/resources/optimized/taskbar/doc.png',
+  projects: '/resources/optimized/taskbar/projects.png',
+  links: '/resources/optimized/taskbar/folder.png',
+};
+
 const leftStartMenuItems = [
   {
     id: 'info',
@@ -279,7 +286,7 @@ function Taskbar({
               <img
                 className="taskbaricon"
                 draggable="false"
-                src={windowData.icon}
+                src={classicTaskbarIcons[windowData.id] ?? windowData.icon}
                 alt=""
                 width="35"
                 height="35"
