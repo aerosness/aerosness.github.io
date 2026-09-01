@@ -1207,7 +1207,7 @@ img {
   background-image: url("/resources/img/Tint.png");
   background-position: center;
   background-size: cover;
-  box-shadow: 0 0 0 2px #000;
+  box-shadow: 0 0 0 2px #fff;
   transition: background-color 50ms;
 }
 
