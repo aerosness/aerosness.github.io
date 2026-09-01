@@ -51,8 +51,8 @@ function LoginOverlay({ onEnter }) {
       </h1>
       <p className="login-kicker">Frontend-focused full-stack developer</p>
       <p id="login-description" className="login-description">
-        Enter an interactive Windows 7-inspired portfolio. Choose the quiet
-        option—or press Escape—to skip the startup sound.
+        Enter an interactive Windows 7 inspired portfolio. Choose the quiet
+        option or press Escape to skip the startup sound.
       </p>
 
       <div
