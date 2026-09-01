@@ -1096,146 +1096,156 @@ img {
 
 .taskbar {
   position: absolute;
-  right: 0;
   bottom: 0;
   left: 0;
-  z-index: 9000;
+  z-index: 999;
   display: flex;
   width: 100vw;
   height: 40px;
-  align-items: stretch;
-  border: 0;
-  background: rgba(0, 0, 0, 0.086);
+  background-color: #00000016;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.31),
-    0 0 0 2px rgba(0, 0, 0, 0.31);
+    0 0 0 1px #ffffff50,
+    0 0 0 2px #00000050;
   backdrop-filter: blur(5px) saturate(1.5);
   -webkit-backdrop-filter: blur(5px) saturate(1.5);
 }
 
-.start-control {
-  position: relative;
-  width: 60px;
-  flex: 0 0 60px;
-}
-
-.startorb,
-.startbutton {
+.startorb {
   position: absolute;
-  top: 0;
   left: 10px;
+  z-index: 1;
   width: 40px;
   height: 40px;
-  border: 0;
-  border-radius: 0;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.startorb {
-  z-index: 1;
-  pointer-events: none;
   background-image: url("/resources/img/WindowsIdle.png");
+  background-position: center;
   background-size: contain;
-  filter: none;
-  transition: 500ms;
+  transition-duration: 0.5s;
 }
 
 .startbutton {
+  position: absolute;
+  left: 10px;
   z-index: 3;
-  min-width: 0;
-  min-height: 0;
-  padding: 0;
-  outline: 0 !important;
+  width: 40px;
+  min-width: 0 !important;
+  height: 40px;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 solid transparent !important;
   opacity: 0;
-  cursor: default;
-  background-color: transparent;
   background-image: url("/resources/img/WindowsActivated.png");
+  background-position: center;
   background-size: 60px;
-  box-shadow: none !important;
-  transition: opacity 150ms;
+  box-shadow: inset 0 0 0 0 #fcfcfc !important;
+  transition-duration: 0.15s;
 }
 
 .startbutton:hover,
-.startbutton:active,
-.startbuttonactive {
+.startbutton:active {
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 solid transparent !important;
   opacity: 1;
+  background-image: url("/resources/img/WindowsActivated.png");
+  background-position: center;
+  background-size: 60px;
+  box-shadow: inset 0 0 0 0 #fcfcfc !important;
 }
 
-.startbutton:focus-visible {
+.startbuttonactive {
+  position: absolute;
+  left: 10px;
+  z-index: 4;
+  width: 40px;
+  min-width: 0 !important;
+  height: 40px;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 solid transparent !important;
   opacity: 1;
-  outline: 2px solid #ffbf47 !important;
-  outline-offset: -3px;
+  background-image: url("/resources/img/WindowsActivated.png");
+  background-position: center;
+  background-size: 60px;
+  box-shadow: inset 0 0 0 0 #fcfcfc !important;
 }
 
 .taskbaricons {
   position: absolute;
   left: 60px;
   display: flex;
-  min-width: 0;
-  max-width: calc(100vw - 175px);
-  height: 39px;
   gap: 3px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
+  max-width: 80vw;
 }
 
-.taskbaricons::-webkit-scrollbar {
-  display: none;
-}
-
-.taskbarbutton,
-.taskbarbutton:hover {
-  --img-colour: rgba(118, 205, 255, 0.92);
+.taskbarbutton {
   position: relative;
   z-index: 1;
   display: flex;
   width: 60px;
-  min-width: 60px;
+  min-width: 0 !important;
   height: 39px;
-  min-height: 39px;
+  min-height: 0 !important;
   align-items: center;
   justify-content: center;
   padding: 0 !important;
-  overflow: hidden;
   border: 0 !important;
   border-radius: 2px;
-  outline: inset 1px #fff !important;
-  cursor: default;
-  background-color: rgba(255, 255, 255, 0.09);
+  outline: inset 1px #ffffff !important;
+  background-color: #ffffff17;
   background-image: url("/resources/img/Tint.png");
-  background-position: center;
-  background-size: cover;
-  box-shadow: 0 0 0 2px #000;
-  transition: background-color 50ms;
+  box-shadow: 0 0 0 2px #000000;
+  transition-duration: 0.05s;
 }
 
 .taskbarbutton:hover {
-  background-color: rgba(255, 255, 255, 0.18);
+  position: relative;
+  z-index: 1;
+  width: 60px;
+  min-width: 0 !important;
+  height: 39px;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 2px;
+  outline: inset 1px #ffffff !important;
+  background-color: #ffffff2e;
+  background-image: url("/resources/img/Tint.png");
+  box-shadow: 0 0 0 2px #000000;
 }
 
 .taskbarbutton:active {
-  background-color: rgba(255, 255, 255, 0.34);
+  background-color: #ffffff56;
+}
+
+.taskbarbutton > img {
+  z-index: 2;
+  width: 35px;
+  height: auto;
 }
 
 .taskbarbutton::before {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   z-index: 2;
+  width: 100%;
+  height: 100%;
   border-radius: inherit;
   content: "";
   opacity: 0;
   background: radial-gradient(
-    80px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    80px circle at var(--mouse-x) var(--mouse-y),
     var(--img-colour),
     transparent 40%
   );
   transition: opacity 5ms;
-}
-
-.taskbarbutton::after {
-  display: none;
 }
 
 .taskbarbutton:hover::before {
@@ -1243,171 +1253,148 @@ img {
 }
 
 .taskbarfocused {
-  background-color: rgba(255, 255, 255, 0.39);
-}
-
-.taskbarbutton:focus-visible {
-  outline: 2px solid #ffbf47 !important;
-  outline-offset: -3px;
-}
-
-.taskbaricon {
-  position: relative;
-  z-index: 3;
-  width: 35px;
-  height: auto;
-  object-fit: contain;
-  filter: none;
-}
-
-.datetime {
-  text-shadow: 0 1px 2px #000;
+  background-color: rgba(255, 255, 255, 0.393);
 }
 
 .aeropeek {
   position: absolute;
-  top: 0;
   right: 0;
   width: 15px;
   height: 40px;
-  outline: inset 1px #fff !important;
-  cursor: default;
-  background-color: rgba(0, 0, 0, 0.18) !important;
-  background-image: url("/resources/img/Tint.png") !important;
-  border: 0 !important;
-  box-shadow: 0 0 0 2px #000;
-  transition: background-color 150ms cubic-bezier(0.075, 0.82, 0.165, 1);
+  outline: inset 1px #ffffff !important;
+  background-color: #0000002e;
+  background-image: url("/resources/img/Tint.png");
+  box-shadow: 0 0 0 2px #000000;
+  transition-duration: 0.15s;
+  transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
-.aeropeek:hover,
-.aeropeek[aria-pressed="true"] {
-  background-color: rgba(255, 255, 255, 0.08) !important;
+.aeropeek:hover {
+  background-color: #ffffff15;
 }
 
 .start {
   position: absolute;
   bottom: 43px;
   left: 0;
-  z-index: 9999;
-  display: grid;
-  width: min(411px, 100vw);
-  height: min(477px, calc(100vh - 52px));
-  grid-template-columns: minmax(0, 250px) minmax(0, 147px);
-  padding: 10px 7px;
-  border: 0;
+  z-index: 999999999;
+  width: 411px;
+  height: 477px;
   border-radius: 8px;
-  outline: 2px solid rgba(0, 0, 0, 0.31);
-  color: #111;
+  outline: 2px solid #00000050;
   background: linear-gradient(
     0deg,
-    rgba(0, 0, 0, 0.31) 0%,
-    rgba(46, 75, 90, 0.65) 45%,
-    rgba(0, 0, 0, 0.6) 100%
+    #0000004e 0%,
+    #2e4b5aa7 45%,
+    #00000099 100%
   );
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.31);
+  box-shadow: inset 0 0 0 1px #ffffff50;
   backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  transition-duration: 0.1s;
 }
 
 .startinner {
-  grid-column: 1;
-  grid-row: 1;
-  min-width: 0;
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  width: 250px;
+  height: 455px;
   padding: 4px;
-  overflow-y: auto;
-  border: 0;
   border-radius: 4px;
-  outline: 2px solid rgba(255, 255, 255, 0.28);
-  background: #fff;
-  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.61);
-}
-
-.start-menu-items {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+  outline: 2px solid #ffffff47;
+  background-color: #ffffff;
+  box-shadow: inset 0 0 0 2px #0000009c;
+  transform: translateY(-50%);
 }
 
 .start-menu-item {
   display: flex;
-  width: 100%;
-  min-height: 50px;
   align-items: center;
+  margin-bottom: 2px;
   padding: 4px 8px;
-  border: 1px solid transparent;
-  border-radius: 3px;
-  color: #13202b;
-  text-align: left;
-  cursor: default;
-  background: transparent;
+  border-radius: 2px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: transparent;
+  transition: background-color 0.2s ease;
 }
 
-.start-menu-item img {
-  flex: 0 0 auto;
-  object-fit: contain;
-}
-
-.start-menu-item:hover,
-.start-menu-item:focus-visible {
-  border-color: #3c7fb1;
-  background: linear-gradient(#e8f6ff, #b8ddf1);
+.start-menu-item:hover {
+  outline: 1px solid #3c7fb1;
+  background: linear-gradient(
+    0deg,
+    rgba(167, 217, 245, 1) 0%,
+    rgb(175, 215, 238) 29%,
+    rgba(188, 229, 252, 1) 49%,
+    rgba(217, 240, 252, 1) 49%,
+    rgb(213, 232, 243) 69%,
+    rgba(234, 246, 253, 1) 100%
+  );
 }
 
 .startrightcontainer {
-  position: relative;
-  grid-column: 2;
-  grid-row: 1;
-  min-width: 0;
-  padding: 50px 13px 8px;
+  position: absolute;
+  right: 0;
+  display: flex;
+  width: 147px;
+  height: 100%;
+  flex-direction: column;
 }
 
 .startprofileimage {
   position: absolute;
-  top: 0;
-  left: 50%;
-  width: 78px;
-  height: 78px;
-  transform: translate(-50%, -30px);
-}
-
-.startprofileimage .profileimg {
-  padding: 7px;
+  right: 50%;
+  transform: translateX(50%) translateY(-50px) scale(0.7);
 }
 
 .startmenuexplorebuttons {
+  position: absolute;
+  top: 50px;
   display: flex;
+  width: 100%;
   flex-direction: column;
-  align-items: center;
   gap: 10px;
+  align-items: center;
+  justify-content: center;
 }
 
 .StartMenuButton {
   width: 120px;
-  min-width: 0;
-  min-height: 30px;
-  padding: 5px;
-  border: 1px solid transparent;
-  border-radius: 5px;
-  outline: 0;
+  min-width: 0 !important;
+  height: 30px;
+  min-height: 0 !important;
+  padding: 5px !important;
+  border-radius: 5px !important;
+  outline: 0 solid transparent !important;
   color: #fff;
   text-align: left;
-  text-shadow: 0 5px 5px rgba(0, 0, 0, 0.59);
+  text-shadow: 0 5px 5px rgba(0, 0, 0, 0.585);
   white-space: nowrap;
-  cursor: default;
   background: none;
-  box-shadow: none;
+  box-shadow: inset 0 0 0 0 #fcfcfc !important;
 }
 
-.StartMenuButton:hover,
-.StartMenuButton:focus-visible {
-  border-color: rgba(255, 255, 255, 0.47);
-  outline: 1px solid #000;
+.StartMenuButton:hover {
+  border: 1px solid rgba(255, 255, 255, 0.472);
+  outline: 1px solid #000 !important;
   background: linear-gradient(
     0deg,
-    transparent 0%,
-    rgba(66, 66, 66, 0.6) 50%,
-    rgba(255, 255, 255, 0.27) 50%,
-    transparent 100%
+    rgba(255, 255, 255, 0) 0%,
+    rgba(66, 66, 66, 0.601) 50%,
+    rgba(255, 255, 255, 0.268) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+.StartMenuButton:active {
+  border: 1px solid rgba(255, 255, 255, 0.472);
+  outline: 1px solid #000 !important;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(66, 66, 66, 0.601) 50%,
+    rgba(255, 255, 255, 0.268) 50%,
+    rgba(255, 255, 255, 0) 100%
   );
 }
 
@@ -1474,25 +1461,73 @@ img {
   }
 
   .taskbaricons {
-    max-width: calc(100vw - 175px);
+    left: 55px;
+    max-width: calc(100vw - 110px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
   }
 
-  .taskbarbutton {
-    width: 46px;
-    min-width: 46px;
-  }
-
-  .taskbaricon {
-    width: 26px;
-    height: auto;
-  }
-
-  .taskbarbutton::before {
+  .taskbaricons::-webkit-scrollbar {
     display: none;
   }
 
+  .taskbarbutton,
+  .taskbarbutton:hover {
+    width: 46px;
+    height: 36px;
+  }
+
+  .taskbarbutton > img {
+    width: 26px;
+  }
+
+  .datetime {
+    right: 8px !important;
+    font-size: 10px !important;
+  }
+
+  .aeropeek {
+    width: 8px;
+  }
+
   .start {
-    height: min(470px, calc(100vh - 52px));
+    bottom: 43px;
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - 43px);
+    border-radius: 0;
+  }
+
+  .startinner {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 65%;
+    transform: none;
+  }
+
+  .startrightcontainer {
+    position: relative;
+    width: 100%;
+    height: 35%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 10px 0;
+  }
+
+  .startprofileimage {
+    position: relative;
+    right: auto;
+    transform: scale(0.6);
+  }
+
+  .startmenuexplorebuttons {
+    position: relative;
+    top: 0;
+    flex-flow: row wrap;
   }
 
   .quick-facts {
@@ -1521,28 +1556,6 @@ img {
   .forwardbtn,
   .quietbtn {
     width: 100%;
-  }
-
-  .start {
-    bottom: 40px;
-    left: 0;
-    width: 100vw;
-    height: calc(100vh - 40px);
-    grid-template-columns: 1fr;
-    padding: 8px;
-    border-right: 0;
-    border-bottom: 0;
-    border-left: 0;
-    border-radius: 0;
-  }
-
-  .startinner {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .startrightcontainer {
-    display: none;
   }
 
   .window-page,
@@ -1620,30 +1633,17 @@ img {
   }
 }
 
-@media (max-width: 390px) {
-  .start-control {
-    width: 54px;
-    flex-basis: 54px;
-  }
-
-  .startorb,
-  .startbutton {
-    left: 4px;
-  }
-
-  .taskbaricons {
-    max-width: calc(100vw - 70px);
-  }
-
-  .taskbarbutton,
-  .taskbarbutton:hover {
+@media (max-width: 420px) {
+  .taskbarbutton {
     width: 40px;
-    min-width: 40px;
   }
 
   .datetime {
     display: none !important;
   }
+}
+
+@media (max-width: 390px) {
 
   .info-actions {
     grid-template-columns: 1fr;
