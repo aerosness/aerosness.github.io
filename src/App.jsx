@@ -1,184 +1,153 @@
-import React, { useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
+import AboutContent from './components/WindowContents/AboutContent';
 import InfoContent from './components/WindowContents/InfoContent';
 import LinksContent from './components/WindowContents/LinksContent';
 import ProjectsContent from './components/WindowContents/ProjectsContent';
-import AboutContent from './components/WindowContents/AboutContent';
-import LoginOverlay from './components/LoginOverlay';
 import Desktop from './components/Desktop';
-import Window from './components/Window';
+import LoginOverlay from './components/LoginOverlay';
 import Taskbar from './components/Taskbar';
+import Window from './components/Window';
+import { useViewport } from './hooks/useViewport';
+import {
+  INITIAL_WINDOWS,
+  WINDOW_ACTIONS,
+  createWindowManagerState,
+  isWindowVisible,
+  windowManagerReducer,
+} from './state/windowManager';
 import './App.css';
 
-const App = () => {
-  const initialWindows = [
-    {
-      id: 'info',
-      title: 'Info',
-      icon: 'resources/ico/help.ico',
-      visible: true,
-      isMaximized: false,
-      position: { top: 50, left: 630 },
-      defaultPosition: { top: 50, left: 630 },
-      size: { width: 700, height: 580 },
-      defaultSize: { width: 700, height: 580 },
-      zIndex: 1,
-    },
-    {
-      id: 'about',
-      title: 'About Me',
-      icon: 'resources/ico/doc.ico',
-      visible: false,
-      isMaximized: false,
-      position: { top: 70, left: 200 },
-      defaultPosition: { top: 70, left: 200 },
-      size: { width: 700, height: 600 },
-      defaultSize: { width: 700, height: 600 },
-      zIndex: 1,
-    },
-    {
-      id: 'projects',
-      title: 'Projects',
-      icon: 'resources/ico/projects.ico',
-      visible: false,
-      isMaximized: false,
-      position: { top: 50, left: 100 },
-      defaultPosition: { top: 50, left: 100 },
-      size: { width: 600, height: 805 },
-      defaultSize: { width: 600, height: 805 },
-      zIndex: 1,
-    },
-    {
-      id: 'links',
-      title: 'Links',
-      icon: 'resources/ico/folder.ico',
-      visible: false,
-      isMaximized: false,
-      position: { top: 10, left: 530 },
-      defaultPosition: { top: 10, left: 530 },
-      size: { width: 900, height: 'auto' },
-      defaultSize: { width: 900, height: 'auto' },
-      zIndex: 1,
-    },
-  ];
+function getWindowContent(windowId, openWindow) {
+  switch (windowId) {
+    case 'links':
+      return <LinksContent />;
+    case 'info':
+      return <InfoContent openWindow={openWindow} />;
+    case 'projects':
+      return <ProjectsContent />;
+    case 'about':
+      return <AboutContent />;
+    default:
+      return null;
+  }
+}
 
-  const [windows, setWindows] = useState(initialWindows);
-  const [currentZ, setCurrentZ] = useState(1);
-  const [activeWindowId, setActiveWindowId] = useState(null);
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  // дает zindex чтоб сверху было окно
-  const bringToFront = (id) => {
-    setWindows((prev) =>
-      prev.map((w) => {
-        if (w.id === id) {
-          const newZ = currentZ + 1;
-          setCurrentZ(newZ);
-          return { ...w, zIndex: newZ };
-        }
-        return w;
-      })
-    );
-    setActiveWindowId(id);
-  };
-
-  // Обновляет параметры указанного окна
-  const updateWindow = (id, newProps) => {
-    setWindows((prev) =>
-      prev.map((w) => (w.id === id ? { ...w, ...newProps } : w))
-    );
-  };
-
-  // Переключает видимость окна и делает его активным
-  const toggleWindowVisibility = (id) => {
-    setWindows((prev) =>
-      prev.map((w) => (w.id === id ? { ...w, visible: !w.visible } : w))
-    );
-    setActiveWindowId(id);
-  };
-
-  // закрывает окно сбрасывает его положение к дефолтным значениям 
-  const closeWindow = (id) => {
-    setWindows((prev) =>
-      prev.map((w) =>
-        w.id === id
-          ? {
-              ...w,
-              visible: false,
-              isMaximized: false,
-              position: w.defaultPosition,
-              size: w.defaultSize,
-            }
-          : w
-      )
-    );
-    if (activeWindowId === id) {
-      setActiveWindowId(null);
+function App() {
+  const viewport = useViewport();
+  const [hasEntered, setHasEntered] = useState(() => {
+    try {
+      return window.sessionStorage.getItem('portfolio-intro-seen') === 'true';
+    } catch {
+      return false;
     }
-  };
+  });
+  const [windowState, dispatch] = useReducer(
+    windowManagerReducer,
+    viewport,
+    (initialViewport) =>
+      createWindowManagerState(INITIAL_WINDOWS, initialViewport),
+  );
 
-  const hideAllWindows = () => {
-    setWindows((prev) => prev.map((w) => ({ ...w, visible: false })));
-    setActiveWindowId(null);
-  };
+  useEffect(() => {
+    dispatch({
+      type: WINDOW_ACTIONS.CLAMP_TO_VIEWPORT,
+      viewport,
+    });
+  }, [viewport]);
 
   const openWindow = (id) => {
-    updateWindow(id, { visible: true });
-    bringToFront(id);
+    dispatch({ type: WINDOW_ACTIONS.OPEN, id });
   };
 
-  const minimizeWindow = (id) => {
-    setWindows((prev) =>
-      prev.map((w) => (w.id === id ? { ...w, visible: false } : w))
-    );
-    if (activeWindowId === id) {
-      setActiveWindowId(null);
-    }
+  const focusWindow = (id) => {
+    dispatch({ type: WINDOW_ACTIONS.FOCUS, id });
   };
+
+  const moveWindow = (id, position) => {
+    dispatch({
+      type: WINDOW_ACTIONS.MOVE,
+      id,
+      position,
+      viewport,
+    });
+  };
+
+  const enterPortfolio = () => {
+    try {
+      window.sessionStorage.setItem('portfolio-intro-seen', 'true');
+    } catch {
+      // Storage can be unavailable in privacy modes; entering should still work.
+    }
+    setHasEntered(true);
+  };
+
+  const desktopIsInert = !hasEntered;
 
   return (
-    <div className="desktop-container">
-      {!loggedIn && <LoginOverlay onLogin={() => setLoggedIn(true)} />}
-
-      <Desktop windows={windows} openWindow={openWindow} />
-
-      {windows.map(
-        (w) =>
-          w.visible && (
-            <Window
-              key={w.id}
-              windowData={w}
-              bringToFront={bringToFront}
-              updateWindow={updateWindow}
-              closeWindow={closeWindow}
-            >
-              {w.id === 'links' ? (
-                <LinksContent />
-              ) : w.id === 'info' ? (
-                <InfoContent openWindow={openWindow} />
-              ) : w.id === 'projects' ? (
-                <ProjectsContent />
-              ) : w.id === 'about' ? (
-                <AboutContent />
-              ) : (
-                <div className="window-content">
-                  {w.title} content goes here.
-                </div>
-              )}
-            </Window>
-          )
+    <div
+      className="desktop-container"
+      style={{
+        position: 'fixed',
+        inset: 0,
+        width: '100vw',
+        height: '100vh',
+        overflow: 'hidden',
+      }}
+    >
+      {desktopIsInert && (
+        <LoginOverlay onEnter={enterPortfolio} />
       )}
 
-      <Taskbar
-        windows={windows}
-        activeWindowId={activeWindowId}
-        toggleWindowVisibility={toggleWindowVisibility}
-        bringToFront={bringToFront}
-        hideAllWindows={hideAllWindows}
-        openWindow={openWindow}
-        minimizeWindow={minimizeWindow}
-      />
+      <div
+        className="desktop-shell"
+        aria-hidden={desktopIsInert || undefined}
+        inert={desktopIsInert}
+        style={{ position: 'relative', width: '100%', height: '100%' }}
+      >
+        <Desktop windows={windowState.windows} onOpenWindow={openWindow} />
+
+        {windowState.windows.map(
+          (windowData) =>
+            isWindowVisible(windowData) && (
+              <Window
+                key={windowData.id}
+                windowData={windowData}
+                viewport={viewport}
+                isActive={windowState.activeWindowId === windowData.id}
+                interactionEnabled={hasEntered}
+                onFocusWindow={focusWindow}
+                onMoveWindow={moveWindow}
+                onMinimizeWindow={(id) =>
+                  dispatch({ type: WINDOW_ACTIONS.MINIMIZE, id })
+                }
+                onToggleMaximize={(id) =>
+                  dispatch({ type: WINDOW_ACTIONS.TOGGLE_MAXIMIZE, id })
+                }
+                onCloseWindow={(id) =>
+                  dispatch({ type: WINDOW_ACTIONS.CLOSE, id })
+                }
+              >
+                {getWindowContent(windowData.id, openWindow)}
+              </Window>
+            ),
+        )}
+
+        <Taskbar
+          windows={windowState.windows}
+          activeWindowId={windowState.activeWindowId}
+          isShowingDesktop={Boolean(windowState.desktopSnapshot)}
+          isCompact={viewport.width <= 768}
+          onOpenWindow={openWindow}
+          onTaskbarWindow={(id) =>
+            dispatch({ type: WINDOW_ACTIONS.TASKBAR_ACTIVATE, id })
+          }
+          onShowDesktop={() =>
+            dispatch({ type: WINDOW_ACTIONS.SHOW_DESKTOP })
+          }
+        />
+      </div>
     </div>
   );
-};
+}
 
 export default App;

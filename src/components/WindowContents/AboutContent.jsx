@@ -1,80 +1,69 @@
-import React from "react";
+import { skillGroups } from '../../data/portfolio';
 
-const AboutContent = () => {
-  return (
-    <div
-      className="about-content-page"
-      style={{
-        backgroundImage: 'url(resources/img/aboutbg.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        padding: '20px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '14px',
-      }}
-    >
-      <h2 style={{ margin: 0 }}>About Me</h2>
+const AboutContent = () => (
+  <section className="about-page window-page" aria-labelledby="about-heading">
+    <header className="about-header">
+      <p className="section-eyebrow">A little more context</p>
+      <h1 id="about-heading">About me</h1>
+    </header>
 
-      <div className="aero-glass" style={{ padding: '14px 16px' }}>
-        <p style={{ margin: '0 0 8px 0' }}>I'm 18, based in Fort Collins, CO, and I build things on the web, mostly with React.</p>
-        <p style={{ margin: '0 0 8px 0' }}>Started with gamedev, slowly pulled into full-stack development because curiosity doesn't stop at one stack.</p>
-        <p style={{ margin: 0 }}>This site itself is one of my projects built to look and feel like Windows 7, down to the windows you're clicking through right now.</p>
-      </div>
+    <section className="about-story aero-glass" aria-labelledby="about-story-heading">
+      <h2 id="about-story-heading">Developer with a creative starting point</h2>
+      <p>
+        I’m a Computer Science freshman at Colorado State University and a
+        developer based in Fort Collins, Colorado. I started by making games,
+        then followed that curiosity into full-stack web development. Today I
+        work mostly in React while continuing to build with Python, Django,
+        Flask, and Unity.
+      </p>
+      <p>
+        I’m drawn to projects where the interface has a point of view. This
+        portfolio is a good example: it translates the Windows 7 desktop into
+        an interactive React experience instead of treating the theme as a
+        static coat of paint.
+      </p>
+    </section>
 
-      <div style={{ display: 'flex', gap: '14px' }}>
-        <div className="aero-glass" style={{ flex: 1, padding: '14px 16px' }}>
-          <h3 style={{ margin: '0 0 10px 0', fontSize: '14px' }}>What I'm Into</h3>
-          <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', lineHeight: 1.8 }}>
-            <li>⚛️ Modern front-end frameworks</li>
-            <li>⚙️ Lightweight backend solutions</li>
-            <li>🛠️ Open source</li>
-            <li>🕹️ Unity game development</li>
-          </ul>
-        </div>
+    <div className="about-columns">
+      <section className="about-panel aero-glass" aria-labelledby="interests-heading">
+        <h2 id="interests-heading">What I like building</h2>
+        <ul className="about-list">
+          <li>Interactive front-end experiences</li>
+          <li>Lightweight full-stack tools</li>
+          <li>Open-source experiments</li>
+          <li>Unity games and prototypes</li>
+        </ul>
+      </section>
 
-        <div className="aero-glass" style={{ flex: 1, padding: '14px 16px' }}>
-          <h3 style={{ margin: '0 0 10px 0', fontSize: '14px' }}>Outside of Code</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px' }}>
-            <div>🎮 Gaming & game dev</div>
-            <div>🎵 Music production</div>
-            <div>🎨 Visual & video editing</div>
-            <div>📸 Photography</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="aero-glass" style={{ padding: '14px 16px' }}>
-        <h3 style={{ margin: '0 0 10px 0', fontSize: '14px' }}>Tech Stack</h3>
-        <div className="badges" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-          <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
-          <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
-          <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
-          <img src="https://img.shields.io/badge/Python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" alt="Python" />
-          <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
-          <img src="https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django" />
-          <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
-          <img src="https://img.shields.io/badge/Unity-000000?style=for-the-badge&logo=unity&logoColor=white" alt="Unity" />
-          <img src="https://img.shields.io/badge/Adobe%20Photoshop-31A8FF?style=for-the-badge&logo=adobe%20photoshop&logoColor=white" alt="Photoshop" />
-          <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" alt="Figma" />
-        </div>
-      </div>
-
-      <style>{`
-        .aero-glass {
-          background: #b6d8fb2f
-            linear-gradient(0deg, rgba(231,240,255,0) 0%, rgba(253,254,255,0) 64%, rgba(255,255,255,1) 65%, rgba(255,255,255,1) 65%, rgba(231,240,255,0) 90%);
-          background-color: #46a2ff5e;
-          border-radius: 5px;
-          backdrop-filter: blur(3px);
-          -webkit-backdrop-filter: blur(3px);
-          box-shadow: 0px 3px 10px rgba(0,0,0,0.5),
-                      inset 0px 0px 0px 1px #fcfcfc;
-          outline: solid 1px #000000;
-        }
-      `}</style>
+      <section className="about-panel aero-glass" aria-labelledby="creative-heading">
+        <h2 id="creative-heading">Beyond code</h2>
+        <ul className="about-list">
+          <li>Game development and gaming</li>
+          <li>Music production</li>
+          <li>Visual and video editing</li>
+          <li>Photography</li>
+        </ul>
+      </section>
     </div>
-  );
-};
+
+    <section className="skills-panel aero-glass" aria-labelledby="skills-heading">
+      <h2 id="skills-heading">Tools I use</h2>
+      <div className="skill-groups">
+        {skillGroups.map((group) => (
+          <div key={group.label} className="skill-group">
+            <h3>{group.label}</h3>
+            <ul className="skill-chips" aria-label={`${group.label} skills`}>
+              {group.skills.map((skill) => (
+                <li key={skill} className="skill-chip">
+                  {skill}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  </section>
+);
 
 export default AboutContent;
