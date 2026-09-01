@@ -32,19 +32,8 @@ Portfolio copy and project details are centralized in
 desktop shell and shared visual system live in [`src/App.jsx`](src/App.jsx) and
 [`src/App.css`](src/App.css).
 
-## Inspiration and asset provenance
+##
 
 The web-desktop collection at
 [simone.computer](https://simone.computer/#/webdesktops) was an important source
 of inspiration for the format.
-
-This is an independent portfolio homage and is not affiliated with or endorsed
-by Microsoft. Windows, Windows 7, and related product imagery and trade dress
-belong to Microsoft. Other product names and logos belong to their respective
-owners.
-
-Some visual and audio files under `public/resources` reference or may originate
-from third-party products and sources. They are included here for portfolio and
-demonstration purposes; authorship or redistribution rights are not claimed.
-Before reusing or redistributing this project, audit those files and replace
-them with assets you own or have permission to use.
