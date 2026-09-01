@@ -32,42 +32,6 @@ Portfolio copy and project details are centralized in
 desktop shell and shared visual system live in [`src/App.jsx`](src/App.jsx) and
 [`src/App.css`](src/App.css).
 
-## Run locally
-
-You will need a current Node.js LTS release and npm.
-
-```bash
-git clone https://github.com/aerosness/aerosness.github.io.git
-cd aerosness.github.io
-npm install
-npm run dev
-```
-
-Vite will print the local preview address in the terminal.
-
-## Quality checks
-
-```bash
-npm run lint
-npm test
-npm run build
-```
-
-Run all three in sequence with:
-
-```bash
-npm run check
-```
-
-## Deployment
-
-The site is configured for GitHub Pages. To build and publish the `dist`
-directory with the configured `gh-pages` workflow:
-
-```bash
-npm run deploy
-```
-
 ## Inspiration and asset provenance
 
 The web-desktop collection at
