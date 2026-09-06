@@ -90,7 +90,9 @@ function App() {
         position: 'fixed',
         inset: 0,
         width: '100vw',
-        height: '100vh',
+        // Keep the taskbar inside the same visible bounds as the windows.
+        '--desktop-height': `${viewport.height}px`,
+        height: 'var(--desktop-height)',
         overflow: 'hidden',
       }}
     >
