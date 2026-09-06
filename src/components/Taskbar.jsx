@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 const classicTaskbarIcons = {
@@ -16,7 +16,10 @@ function Taskbar({
   onShowDesktop,
 }) {
   const taskbarIconsRef = useRef(null);
+  const iconColorsRef = useRef(new Map());
+  const startButtonRef = useRef(null);
   const startMenuRef = useRef(null);
+  const startMenuId = useId();
   const [showStartMenu, setShowStartMenu] = useState(false);
   const [currentTime, setCurrentTime] = useState(() => new Date());
   const isMobile = useIsMobile();
@@ -36,17 +39,28 @@ function Taskbar({
       return undefined;
     }
 
-    const handleMouseMove = (event) => {
-      const cards = taskbarIcons.querySelectorAll('.taskbarbutton');
+    const cards = taskbarIcons.querySelectorAll('.taskbarbutton');
+    const removeImageListeners = [];
 
-      cards.forEach((card) => {
-        const taskbarIcon = card.querySelector('.taskbaricon');
+    cards.forEach((card) => {
+      const taskbarIcon = card.querySelector('.taskbaricon');
+      if (!taskbarIcon) return;
 
-        if (taskbarIcon) {
+      const updateIconColor = () => {
+        if (!taskbarIcon.complete || !taskbarIcon.naturalWidth) return;
+
+        const width = taskbarIcon.clientWidth;
+        const height = taskbarIcon.clientHeight;
+        if (!width || !height) return;
+
+        const cacheKey = `${taskbarIcon.currentSrc || taskbarIcon.src}:${width}x${height}`;
+        let color = iconColorsRef.current.get(cacheKey);
+
+        if (!color) {
           try {
             const canvas = document.createElement('canvas');
-            canvas.width = taskbarIcon.clientWidth;
-            canvas.height = taskbarIcon.clientHeight;
+            canvas.width = width;
+            canvas.height = height;
             const context = canvas.getContext('2d');
 
             if (context) {
@@ -78,16 +92,26 @@ function Taskbar({
               const brighten = (channel) =>
                 Math.min(255, (channel / pixelCount) * 1.5);
 
-              card.style.setProperty(
-                '--img-colour',
-                `rgb(${brighten(totalRed)}, ${brighten(totalGreen)}, ${brighten(totalBlue)})`,
-              );
+              color = `rgb(${brighten(totalRed)}, ${brighten(totalGreen)}, ${brighten(totalBlue)})`;
+              iconColorsRef.current.set(cacheKey, color);
             }
           } catch {
             // The icon glow is decorative and can be skipped by the browser.
           }
         }
 
+        if (color) card.style.setProperty('--img-colour', color);
+      };
+
+      updateIconColor();
+      taskbarIcon.addEventListener('load', updateIconColor);
+      removeImageListeners.push(() =>
+        taskbarIcon.removeEventListener('load', updateIconColor),
+      );
+    });
+
+    const handleMouseMove = (event) => {
+      cards.forEach((card) => {
         const rectangle = card.getBoundingClientRect();
         card.style.setProperty(
           '--mouse-x',
@@ -101,13 +125,27 @@ function Taskbar({
     };
 
     taskbarIcons.addEventListener('mousemove', handleMouseMove);
-    return () => taskbarIcons.removeEventListener('mousemove', handleMouseMove);
+    return () => {
+      taskbarIcons.removeEventListener('mousemove', handleMouseMove);
+      removeImageListeners.forEach((removeListener) => removeListener());
+    };
   }, [isMobile]);
 
   useEffect(() => {
     if (!showStartMenu) {
       return undefined;
     }
+
+    startMenuRef.current?.querySelector('.start-menu-item')?.focus();
+
+    const handleEscape = (event) => {
+      if (event.key !== 'Escape') return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      setShowStartMenu(false);
+      startButtonRef.current?.focus();
+    };
 
     const handleClickOutside = (event) => {
       if (
@@ -120,7 +158,11 @@ function Taskbar({
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape, true);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape, true);
+    };
   }, [showStartMenu]);
 
   const openStartMenuItem = (id) => {
@@ -141,10 +183,12 @@ function Taskbar({
   return (
     <div className="taskbar">
       <button
+        ref={startButtonRef}
         type="button"
         className={showStartMenu ? 'startbutton startbuttonactive' : 'startbutton'}
         aria-label="Start menu"
         aria-expanded={showStartMenu}
+        aria-controls={startMenuId}
         onClick={() => setShowStartMenu((isOpen) => !isOpen)}
       />
       <div className="startorb" aria-hidden="true" />
@@ -207,7 +251,13 @@ function Taskbar({
       />
 
       {showStartMenu && (
-        <div ref={startMenuRef} className="start">
+        <div
+          ref={startMenuRef}
+          id={startMenuId}
+          className="start"
+          role="navigation"
+          aria-label="Start menu shortcuts"
+        >
           <div className="startrightcontainer">
             <div className="profileicon startprofileimage">
               <img
@@ -228,7 +278,7 @@ function Taskbar({
                 className="StartMenuButton"
                 onClick={() => openStartMenuItem('info')}
               >
-                Info
+                Welcome
               </button>
               <button
                 type="button"
@@ -263,6 +313,7 @@ function Taskbar({
                 onClick={() => openStartMenuItem('info')}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
                     openStartMenuItem('info');
                   }
                 }}
@@ -272,7 +323,7 @@ function Taskbar({
                   alt=""
                   style={{ marginRight: '5px', width: '40px', height: '40px' }}
                 />
-                <span>Info</span>
+                <span>Welcome</span>
               </div>
               <div
                 className="start-menu-item"
@@ -281,6 +332,7 @@ function Taskbar({
                 onClick={() => openStartMenuItem('links')}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
                     openStartMenuItem('links');
                   }
                 }}
@@ -299,6 +351,7 @@ function Taskbar({
                 onClick={() => openStartMenuItem('projects')}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
                     openStartMenuItem('projects');
                   }
                 }}
@@ -317,6 +370,7 @@ function Taskbar({
                 onClick={() => openStartMenuItem('about')}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
                     openStartMenuItem('about');
                   }
                 }}

@@ -20,11 +20,11 @@ import './App.css';
 function getWindowContent(windowId, openWindow) {
   switch (windowId) {
     case 'links':
-      return <LinksContent />;
+      return <LinksContent openWindow={openWindow} />;
     case 'info':
       return <InfoContent openWindow={openWindow} />;
     case 'projects':
-      return <ProjectsContent />;
+      return <ProjectsContent openWindow={openWindow} />;
     case 'about':
       return <AboutContent />;
     default:

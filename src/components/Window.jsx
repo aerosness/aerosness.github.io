@@ -34,7 +34,7 @@ function Window({
     ) {
       windowRef.current.focus({ preventScroll: true });
     }
-  }, [interactionEnabled, isActive]);
+  }, [interactionEnabled, isActive, windowData.zIndex]);
 
   const requestFocus = () => {
     if (!isActive && !focusRequestedRef.current) {
