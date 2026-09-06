@@ -1498,7 +1498,7 @@ img {
     left: 4px;
     width: calc(100vw - 8px);
     height: auto;
-    max-height: calc(100vh - 50px);
+    max-height: calc(var(--desktop-height) - 50px);
     flex-flow: column wrap;
     align-content: flex-start;
   }
@@ -1538,7 +1538,7 @@ img {
     bottom: 43px;
     left: 0;
     width: 100vw;
-    height: calc(100vh - 43px);
+    height: calc(var(--desktop-height) - 43px);
     border-radius: 0;
   }
 
