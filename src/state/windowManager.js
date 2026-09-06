@@ -23,14 +23,14 @@ export const WINDOW_ACTIONS = Object.freeze({
 export const INITIAL_WINDOWS = Object.freeze([
   {
     id: 'info',
-    title: 'Info',
+    title: 'Welcome',
     icon: '/resources/optimized/icons/help-64.webp',
     status: WINDOW_STATUS.VISIBLE,
     isMaximized: false,
-    position: { top: 50, left: 630 },
-    defaultPosition: { top: 50, left: 630 },
-    size: { width: 700, height: 580 },
-    defaultSize: { width: 700, height: 580 },
+    position: { top: 44, left: 240 },
+    defaultPosition: { top: 44, left: 240 },
+    size: { width: 760, height: 610 },
+    defaultSize: { width: 760, height: 610 },
     zIndex: 1,
   },
   {
@@ -53,8 +53,8 @@ export const INITIAL_WINDOWS = Object.freeze([
     isMaximized: false,
     position: { top: 50, left: 100 },
     defaultPosition: { top: 50, left: 100 },
-    size: { width: 600, height: 805 },
-    defaultSize: { width: 600, height: 805 },
+    size: { width: 880, height: 640 },
+    defaultSize: { width: 880, height: 640 },
     zIndex: 1,
   },
   {
@@ -65,8 +65,8 @@ export const INITIAL_WINDOWS = Object.freeze([
     isMaximized: false,
     position: { top: 10, left: 530 },
     defaultPosition: { top: 10, left: 530 },
-    size: { width: 900, height: 'auto' },
-    defaultSize: { width: 900, height: 'auto' },
+    size: { width: 780, height: 620 },
+    defaultSize: { width: 780, height: 620 },
     zIndex: 1,
   },
 ]);

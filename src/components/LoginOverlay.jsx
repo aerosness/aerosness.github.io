@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 function LoginOverlay({ onEnter }) {
   const enterButtonRef = useRef(null);
+  const [soundEnabled, setSoundEnabled] = useState(false);
 
   useEffect(() => {
     enterButtonRef.current?.focus();
@@ -24,7 +25,7 @@ function LoginOverlay({ onEnter }) {
 
     if (event.key === 'Tab') {
       const buttons = Array.from(
-        event.currentTarget.querySelectorAll('.login-actions button'),
+        event.currentTarget.querySelectorAll('.login-actions button, .login-actions input'),
       );
       if (buttons.length === 0) return;
 
@@ -46,15 +47,6 @@ function LoginOverlay({ onEnter }) {
       aria-describedby="login-description"
       onKeyDown={handleDialogKeyDown}
     >
-      <h1 id="login-title" className="login-title">
-        Semyon Tyo
-      </h1>
-      <p className="login-kicker">Frontend-focused full-stack developer</p>
-      <p id="login-description" className="login-description">
-        Enter an interactive Windows 7 inspired portfolio. Choose the quiet
-        option or press Escape to skip the startup sound.
-      </p>
-
       <div
         className="profileicon"
         aria-hidden="true"
@@ -70,22 +62,20 @@ function LoginOverlay({ onEnter }) {
           alt=""
         />
       </div>
+      <h1 id="login-title" className="login-title">Semyon Tyo</h1>
+      <p className="login-kicker">aerosness</p>
+      <p id="login-description" className="login-description">
+        CS student at Colorado State University
+      </p>
       <div className="login-actions">
-        <button
-          ref={enterButtonRef}
-          type="button"
-          className="forwardbtn"
-          onClick={() => enterPortfolio(true)}
-        >
-          Enter portfolio
+        <button ref={enterButtonRef} type="button" className="forwardbtn"
+          onClick={() => enterPortfolio(soundEnabled)}>
+          Enter desktop <span aria-hidden="true">→</span>
         </button>
-        <button
-          type="button"
-          className="quietbtn"
-          onClick={() => enterPortfolio(false)}
-        >
-          Continue quietly
-        </button>
+        <label className="login-sound">
+          <input type="checkbox" checked={soundEnabled} onChange={(event) => setSoundEnabled(event.target.checked)} />
+          Play the startup sound
+        </label>
       </div>
     </section>
   );

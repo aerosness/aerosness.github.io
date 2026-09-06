@@ -120,7 +120,7 @@ test('window geometry is clamped inside a 1024 by 700 viewport', () => {
       height: infoLayout.height,
       maxHeight: infoLayout.maxHeight,
     },
-    { top: 50, left: 316, width: 700, height: 580, maxHeight: 610 },
+    { top: 42, left: 240, width: 760, height: 610, maxHeight: 618 },
   );
 });
 
