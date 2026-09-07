@@ -11,6 +11,7 @@ const classicTaskbarIcons = {
 function Taskbar({
   windows,
   activeWindowId,
+  isShowingDesktop,
   onOpenWindow,
   onTaskbarWindow,
   onShowDesktop,
@@ -157,10 +158,10 @@ function Taskbar({
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('pointerdown', handleClickOutside);
     document.addEventListener('keydown', handleEscape, true);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('pointerdown', handleClickOutside);
       document.removeEventListener('keydown', handleEscape, true);
     };
   }, [showStartMenu]);
@@ -202,6 +203,7 @@ function Taskbar({
               activeWindowId === windowData.id ? 'taskbarfocused' : ''
             }`}
             aria-label={windowData.title}
+            aria-pressed={activeWindowId === windowData.id}
             onClick={() => onTaskbarWindow(windowData.id)}
           >
             <img
@@ -241,6 +243,7 @@ function Taskbar({
         role="button"
         tabIndex="0"
         aria-label="Show desktop"
+        aria-pressed={isShowingDesktop}
         onClick={onShowDesktop}
         onKeyDown={(event) => {
           if (event.key === 'Enter' || event.key === ' ') {
