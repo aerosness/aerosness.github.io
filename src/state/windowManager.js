@@ -96,6 +96,12 @@ export const isWindowVisible = (windowData) =>
 export const isWindowOpen = (windowData) =>
   windowData.status !== WINDOW_STATUS.CLOSED;
 
+export function getTaskbarHeight(viewport) {
+  return finiteNumber(viewport?.width) <= 768
+    ? TASKBAR_HEIGHT + Math.max(0, finiteNumber(viewport?.safeAreaBottom))
+    : TASKBAR_HEIGHT;
+}
+
 export function getTopVisibleWindowId(windows, excludedId = null) {
   return windows.reduce((topWindow, windowData) => {
     if (!isWindowVisible(windowData) || windowData.id === excludedId) {
@@ -110,7 +116,10 @@ export function getTopVisibleWindowId(windows, excludedId = null) {
   }, null)?.id ?? null;
 }
 
-export function getDesktopBounds(viewport, taskbarHeight = TASKBAR_HEIGHT) {
+export function getDesktopBounds(
+  viewport,
+  taskbarHeight = getTaskbarHeight(viewport),
+) {
   const width = Math.max(0, finiteNumber(viewport?.width));
   const height = Math.max(
     0,
@@ -123,7 +132,7 @@ export function getDesktopBounds(viewport, taskbarHeight = TASKBAR_HEIGHT) {
 export function getConstrainedWindowSize(
   size,
   viewport,
-  { gutter = DESKTOP_GUTTER, taskbarHeight = TASKBAR_HEIGHT } = {},
+  { gutter = DESKTOP_GUTTER, taskbarHeight = getTaskbarHeight(viewport) } = {},
 ) {
   const desktop = getDesktopBounds(viewport, taskbarHeight);
   const horizontalGutter = desktop.width > gutter * 2 ? gutter * 2 : 0;
@@ -151,7 +160,7 @@ export function clampWindowPosition(
   viewport,
   {
     gutter = DESKTOP_GUTTER,
-    taskbarHeight = TASKBAR_HEIGHT,
+    taskbarHeight = getTaskbarHeight(viewport),
     titleBarHeight = 30,
   } = {},
 ) {

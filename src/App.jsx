@@ -12,6 +12,7 @@ import {
   INITIAL_WINDOWS,
   WINDOW_ACTIONS,
   createWindowManagerState,
+  getTaskbarHeight,
   isWindowVisible,
   windowManagerReducer,
 } from './state/windowManager';
@@ -92,6 +93,8 @@ function App() {
         width: '100vw',
         // Keep the taskbar inside the same visible bounds as the windows.
         '--desktop-height': `${viewport.height}px`,
+        '--taskbar-height': `${getTaskbarHeight(viewport)}px`,
+        '--safe-area-bottom': `${viewport.safeAreaBottom}px`,
         height: 'var(--desktop-height)',
         overflow: 'hidden',
       }}
