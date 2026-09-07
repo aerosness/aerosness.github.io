@@ -9,6 +9,7 @@
   --ink: #17202a;
   --muted: #516272;
   --taskbar-height: 40px;
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 *,
@@ -1498,79 +1499,90 @@ img {
     left: 4px;
     width: calc(100vw - 8px);
     height: auto;
-    max-height: calc(var(--desktop-height) - 50px);
+    max-height: calc(var(--desktop-height) - var(--taskbar-height) - 10px);
     flex-flow: column wrap;
     align-content: flex-start;
   }
 
-  .taskbaricons {
-    left: 55px;
-    max-width: calc(100vw - 110px);
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: none;
+  .taskbar {
+    height: var(--taskbar-height);
+    padding-bottom: var(--safe-area-bottom);
   }
 
-  .taskbaricons::-webkit-scrollbar {
-    display: none;
+  .taskbaricons {
+    top: 1px;
+    left: 56px;
+    max-width: calc(100vw - 84px);
+    gap: 4px;
+    overflow: visible;
   }
 
   .taskbarbutton,
   .taskbarbutton:hover {
-    width: 46px;
-    height: 36px;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 38px;
   }
 
   .taskbarbutton > img {
-    width: 26px;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
   }
 
   .datetime {
-    right: 8px !important;
+    right: 28px !important;
     font-size: 10px !important;
   }
 
   .aeropeek {
-    width: 8px;
+    width: 15px;
   }
 
+  /* Keep the desktop menu's two columns and glass finish within the screen. */
   .start {
-    bottom: 43px;
-    left: 0;
-    width: 100vw;
-    height: calc(var(--desktop-height) - 43px);
-    border-radius: 0;
+    bottom: calc(var(--taskbar-height) + 3px);
+    left: 4px;
+    width: min(411px, calc(100vw - 8px));
+    height: min(477px, calc(var(--desktop-height) - var(--taskbar-height) - 56px));
+    -webkit-backdrop-filter: blur(5px);
   }
 
   .startinner {
-    position: relative;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 65%;
+    top: 10px;
+    bottom: 10px;
+    left: 10px;
+    width: calc(100% - 157px);
+    height: auto;
+    overflow-y: auto;
     transform: none;
   }
 
-  .startrightcontainer {
-    position: relative;
-    width: 100%;
-    height: 35%;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
-    padding: 10px 0;
+  .startmenuexplorebuttons {
+    max-height: calc(100% - 60px);
+    justify-content: flex-start;
+    overflow-y: auto;
+  }
+
+  .startmenuexplorebuttons > .StartMenuButton {
+    flex-shrink: 0;
   }
 
   .startprofileimage {
-    position: relative;
-    right: auto;
-    transform: scale(0.6);
+    top: -34px;
+    right: calc(50% - 38px);
+    width: 76px;
+    height: 76px;
+    transform: none;
   }
 
-  .startmenuexplorebuttons {
-    position: relative;
-    top: 0;
-    flex-flow: row wrap;
+  .startprofileimage .profileimg {
+    padding: 7px;
+    border-radius: 10px;
+  }
+
+  .start-menu-item:focus-visible {
+    outline-offset: -2px;
   }
 
 }
@@ -1582,10 +1594,16 @@ img {
 
   .info-hero {
     grid-template-columns: 74px minmax(0, 1fr);
-    gap: 15px;
+    align-items: center;
+    gap: 0 15px;
+  }
+
+  .info-intro {
+    display: contents;
   }
 
   .info-portrait {
+    grid-row: 1 / 3;
     width: 74px;
     height: 74px;
   }
@@ -1595,7 +1613,14 @@ img {
   }
 
   .info-page h1 {
+    grid-column: 2;
+    align-self: end;
     font-size: 1.55rem;
+  }
+
+  .info-handle {
+    grid-column: 2;
+    align-self: start;
   }
 
   .welcome-banner {
@@ -1604,7 +1629,8 @@ img {
 
   .info-lede,
   .info-location {
-    margin-left: -89px;
+    grid-column: 1 / -1;
+    margin-left: 0;
   }
 
   .info-lede {
@@ -1625,11 +1651,7 @@ img {
   }
 }
 
-@media (max-width: 420px) {
-  .taskbarbutton {
-    width: 40px;
-  }
-
+@media (max-width: 359px) {
   .datetime {
     display: none !important;
   }

@@ -2,14 +2,25 @@ import { useEffect, useState } from 'react';
 
 export function readViewport() {
   if (typeof window === 'undefined') {
-    return { width: 0, height: 0 };
+    return { width: 0, height: 0, safeAreaBottom: 0 };
   }
 
   const visualViewport = window.visualViewport;
+  const rawSafeAreaBottom =
+    typeof document !== 'undefined' && window.getComputedStyle
+      ? Number.parseFloat(
+          window
+            .getComputedStyle(document.documentElement)
+            .getPropertyValue('--safe-area-bottom'),
+        )
+      : 0;
 
   return {
     width: Math.round(visualViewport?.width ?? window.innerWidth),
     height: Math.round(visualViewport?.height ?? window.innerHeight),
+    safeAreaBottom: Number.isFinite(rawSafeAreaBottom)
+      ? Math.max(0, rawSafeAreaBottom)
+      : 0,
   };
 }
 
@@ -28,7 +39,8 @@ export function useViewport() {
         const nextViewport = readViewport();
         setViewport((currentViewport) =>
           currentViewport.width === nextViewport.width &&
-          currentViewport.height === nextViewport.height
+          currentViewport.height === nextViewport.height &&
+          currentViewport.safeAreaBottom === nextViewport.safeAreaBottom
             ? currentViewport
             : nextViewport,
         );

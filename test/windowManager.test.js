@@ -7,6 +7,8 @@ import {
   clampWindowPosition,
   createWindowManagerState,
   getConstrainedWindowSize,
+  getDesktopBounds,
+  getTaskbarHeight,
   getTopVisibleWindowId,
   getWindowLayout,
   windowManagerReducer,
@@ -97,10 +99,12 @@ test('maximize toggles for a visible window and closing resets it', () => {
 });
 
 test('window geometry is clamped inside a 1024 by 700 viewport', () => {
-  const viewport = { width: 1024, height: 700 };
+  const viewport = { width: 1024, height: 700, safeAreaBottom: 34 };
   const requestedSize = { width: 700, height: 580 };
   const requestedPosition = { top: 50, left: 630 };
 
+  assert.equal(getTaskbarHeight(viewport), 40);
+  assert.deepEqual(getDesktopBounds(viewport), { width: 1024, height: 660 });
   assert.deepEqual(getConstrainedWindowSize(requestedSize, viewport), {
     width: 700,
     height: 580,
@@ -153,6 +157,47 @@ test('window geometry remains usable in a 320 by 568 viewport', () => {
     maxHeight: 528,
     borderRadius: 0,
   });
+});
+
+test('mobile windows reserve the taskbar and bottom safe area as the viewport changes', () => {
+  const viewport = { width: 390, height: 844, safeAreaBottom: 34 };
+  const requestedSize = { width: 880, height: 900 };
+
+  assert.equal(getTaskbarHeight(viewport), 74);
+  assert.deepEqual(getDesktopBounds(viewport), { width: 390, height: 770 });
+  assert.deepEqual(getConstrainedWindowSize(requestedSize, viewport), {
+    width: 374,
+    height: 754,
+  });
+  assert.deepEqual(
+    clampWindowPosition({ top: 900, left: 900 }, requestedSize, viewport),
+    { top: 8, left: 8 },
+  );
+
+  const state = createWindowManagerState(undefined, viewport);
+  const windowData = getWindow(state, 'info');
+  const compactLayout = getWindowLayout(windowData, viewport, true);
+  assert.equal(compactLayout.height, 770);
+
+  const reducedViewport = { ...viewport, height: 660 };
+  const reducedLayout = getWindowLayout(windowData, reducedViewport, true);
+  assert.equal(reducedLayout.height, 586);
+  assert.equal(reducedLayout.maxHeight, 586);
+
+  const noSafeAreaLayout = getWindowLayout(
+    windowData,
+    { ...reducedViewport, safeAreaBottom: 0 },
+    true,
+  );
+  assert.equal(noSafeAreaLayout.height, 620);
+});
+
+test('taskbar geometry adds mobile safe areas while preserving the 40px content height', () => {
+  assert.equal(getTaskbarHeight({ width: 768, safeAreaBottom: 34 }), 74);
+  assert.equal(getTaskbarHeight({ width: 769, safeAreaBottom: 34 }), 40);
+  assert.equal(getTaskbarHeight({ width: 390, safeAreaBottom: -10 }), 40);
+  assert.equal(getTaskbarHeight({ width: 390, safeAreaBottom: NaN }), 40);
+  assert.equal(getTaskbarHeight({ width: 390, safeAreaBottom: 0 }), 40);
 });
 
 test('show desktop restores only the windows that were visible and their active window', () => {
