@@ -1,4 +1,5 @@
-import { useEffect, useId, useRef } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef } from 'react';
+import { createWindowDrag } from '../state/windowDrag';
 import { getWindowLayout } from '../state/windowManager';
 
 function Window({
@@ -19,6 +20,27 @@ function Window({
   const titleId = useId();
   const isCompact = viewport.width <= 768;
   const layout = getWindowLayout(windowData, viewport, isCompact);
+
+  useLayoutEffect(() => {
+    const element = windowRef.current;
+    return () => {
+      const drag = dragStateRef.current;
+      if (!drag) return;
+      dragStateRef.current = null;
+      drag.session.cancel();
+      element.style.removeProperty('transform');
+      element.style.removeProperty('will-change');
+      if (drag.handle.hasPointerCapture(drag.pointerId)) {
+        drag.handle.releasePointerCapture(drag.pointerId);
+      }
+    };
+  }, [
+    viewport.width,
+    viewport.height,
+    viewport.safeAreaBottom,
+    windowData.isMaximized,
+    interactionEnabled,
+  ]);
 
   useEffect(() => {
     if (!isActive) {
@@ -46,6 +68,8 @@ function Window({
   const beginDrag = (event) => {
     if (
       isCompact ||
+      !interactionEnabled ||
+      dragStateRef.current ||
       windowData.isMaximized ||
       event.button !== 0 ||
       event.target.closest('.title-bar-controls')
@@ -53,16 +77,28 @@ function Window({
       return;
     }
 
-    const windowRectangle = windowRef.current?.getBoundingClientRect();
-    if (!windowRectangle) {
+    const element = windowRef.current;
+    if (!element) {
       return;
     }
 
+    const position = { left: layout.left, top: layout.top };
+    const session = createWindowDrag({
+      position,
+      pointer: { x: event.clientX, y: event.clientY },
+      size: windowData.size,
+      viewport,
+      onPreview: (nextPosition) => {
+        element.style.transform = `translate3d(${nextPosition.left - position.left}px, ${nextPosition.top - position.top}px, 0)`;
+      },
+    });
     dragStateRef.current = {
       pointerId: event.pointerId,
-      offsetX: event.clientX - windowRectangle.left,
-      offsetY: event.clientY - windowRectangle.top,
+      handle: event.currentTarget,
+      position,
+      session,
     };
+    element.style.willChange = 'transform';
     event.currentTarget.setPointerCapture(event.pointerId);
     event.preventDefault();
   };
@@ -73,20 +109,35 @@ function Window({
       return;
     }
 
-    onMoveWindow(windowData.id, {
-      left: event.clientX - dragState.offsetX,
-      top: event.clientY - dragState.offsetY,
-    });
+    dragState.session.move({ x: event.clientX, y: event.clientY });
   };
 
   const endDrag = (event) => {
-    if (dragStateRef.current?.pointerId !== event.pointerId) {
+    const drag = dragStateRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) {
       return;
     }
 
     dragStateRef.current = null;
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
+    // Cancellation/capture loss keeps the last drag point, not event coordinates.
+    const position = drag.session.finish(
+      event.type === 'pointerup'
+        ? { x: event.clientX, y: event.clientY }
+        : undefined,
+    );
+    const element = windowRef.current;
+    element.style.left = `${position.left}px`;
+    element.style.top = `${position.top}px`;
+    element.style.removeProperty('transform');
+    element.style.removeProperty('will-change');
+    if (drag.handle.hasPointerCapture(event.pointerId)) {
+      drag.handle.releasePointerCapture(event.pointerId);
+    }
+    if (
+      position.left !== drag.position.left ||
+      position.top !== drag.position.top
+    ) {
+      onMoveWindow(windowData.id, position);
     }
   };
 
@@ -138,6 +189,7 @@ function Window({
         onPointerMove={continueDrag}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
+        onLostPointerCapture={endDrag}
         onDoubleClick={handleTitleBarDoubleClick}
       >
         <img
