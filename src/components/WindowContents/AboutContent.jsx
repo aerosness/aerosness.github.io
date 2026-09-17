@@ -25,7 +25,7 @@ const AboutContent = () => (
       </p>
       <h2>When I’m not coding</h2>
       <p>
-        Gaming, making music, taking photos, and editing images or videos.
+        Gaming, listening to music, taking photos, and editing images or videos.
         I like having something creative to work on outside of code.
       </p>
       <h2>Tools I use</h2>
